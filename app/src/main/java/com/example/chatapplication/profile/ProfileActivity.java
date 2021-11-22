@@ -22,7 +22,7 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.chatapplication.MainActivity;
+import com.example.chatapplication.Authentication.LoginActivity;
 import com.example.chatapplication.R;
 import com.example.chatapplication.common.NodeNames;
 import com.example.chatapplication.databinding.ActivityProfileBinding;
@@ -67,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
             // Setting the text of Edit Texts
             // Initializing the required ones
             binding.etEmail.setText(firebaseUser.getEmail());
-            binding.etName.setText(firebaseUser.getDisplayName());
+            binding.etName.setText(firebaseUser.getDisplayName().toString());
             serverFileUri = firebaseUser.getPhotoUrl();
 
             if(serverFileUri!=null){
@@ -90,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
         // setting click listener to logout button
         binding.buttonLogout.setOnClickListener(view1 -> {
             firebaseAuth.signOut();
-            startActivity(new Intent(ProfileActivity.this,MainActivity.class));
+            startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
             finish(); // even though user clicks the back button, he cannot navigate to this activity
         });
 
@@ -168,6 +168,7 @@ public class ProfileActivity extends AppCompatActivity {
                 HashMap<String,String> hashMap = new HashMap<>();
                 hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
                 hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
+                hashMap.put(NodeNames.ONLINE,getString(R.string.online));
                 hashMap.put(NodeNames.PHOTO,"");
 
                 databaseReference.child(userId).setValue(hashMap).addOnCompleteListener(task1 -> {
@@ -305,6 +306,7 @@ public class ProfileActivity extends AppCompatActivity {
                             HashMap<String,String> hashMap = new HashMap<>();
                             hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
                             hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
+                            hashMap.put(NodeNames.ONLINE,getString(R.string.online));
                             hashMap.put(NodeNames.PHOTO,serverFileUri.getPath());
 
                             // pushing the data to the child node
@@ -337,7 +339,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void updateOnlyName(){
         // Updating User details in the realtime database
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
-                .setDisplayName(binding.etName.toString().trim())
+                .setDisplayName(binding.etName.getText().toString().trim())
                 .build();
         firebaseUser.updateProfile(request).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
@@ -354,6 +356,8 @@ public class ProfileActivity extends AppCompatActivity {
                 HashMap<String,String> hashMap = new HashMap<>();
                 hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
                 hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
+                hashMap.put(NodeNames.ONLINE,getString(R.string.online));
+                hashMap.put(NodeNames.PHOTO,"");
 
                 databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task1 -> {
                     if(task1.isSuccessful()){

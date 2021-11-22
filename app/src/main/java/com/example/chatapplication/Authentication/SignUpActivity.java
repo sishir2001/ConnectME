@@ -1,4 +1,4 @@
-package com.example.chatapplication;
+package com.example.chatapplication.Authentication;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +19,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.chatapplication.R;
 import com.example.chatapplication.common.NodeNames;
 import com.example.chatapplication.databinding.ActivitySignUpBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -236,7 +237,7 @@ public class SignUpActivity extends AppCompatActivity {
                databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task1 -> {
                    if(task1.isSuccessful()){
                        Toast.makeText(SignUpActivity.this,getString(R.string.signup_success), Toast.LENGTH_SHORT).show();
-                       startActivity(new Intent(SignUpActivity.this,MainActivity.class));
+                       startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                    }
                    else{
                        Toast.makeText(SignUpActivity.this, "Updation of Hashmap of userProfile failed : "+task1.getException(), Toast.LENGTH_SHORT).show();
