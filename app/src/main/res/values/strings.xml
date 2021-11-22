@@ -19,4 +19,9 @@
     <string name="did_not_choose_any_photo">Did not choose any photo</string>
     <string name="signup_success">SignUp Successful</string>
     <string name="permission_not_granted_file">Permission Not Granted to access a file</string>
+    <string name="save">Save</string>
+    <string name="logout">logout</string>
+    <string name="change_picture">Change Picture</string>
+    <string name="remove_picture">Remove Picture</string>
+    <string name="profile_updated_succ">Profile Updated Successfully</string>
 </resources>
