@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">ChatApplication</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot Password ? </string>
+    <string name="name">Name</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="signup">Sign Up</string>
+    <string name="enter_correct_email">Enter Correct Email</string>
+    <string name="enter_confirm_password">Enter confirm Password</string>
+    <string name="passwords_not_matching">Passwords not matching</string>
+    <string name="signup_failed">SignUp Failed %1$s</string>
+    <string name="donthave_account">Dont have an account?</string>
+    <string name="login_failed">Login Failed %1$s</string>
+    <string name="user_updation_failed">Profile Updation Failed %1$s</string>
+    <string name="online">online</string>
+    <string name="did_not_choose_any_photo">Did not choose any photo</string>
+    <string name="signup_success">SignUp Successful</string>
+    <string name="permission_not_granted_file">Permission Not Granted to access a file</string>
+</resources>
