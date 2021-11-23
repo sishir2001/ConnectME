@@ -6,4 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
+    <include
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        layout="@layout/custom_progressbar"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

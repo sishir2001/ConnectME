@@ -45,4 +45,5 @@
     <string name="something_went_wrong_exep">Something Went Wrong : %1$s</string>
     <string name="failed_to_send_email">Failed to send email</string>
     <string name="reset_timer">Reset : %1$s</string>
+    <string name="please_wait">Please Wait</string>
 </resources>

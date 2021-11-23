@@ -42,11 +42,13 @@ public class SignUpActivity extends AppCompatActivity {
     // StorageReference for static file storage
     private StorageReference fileStorage;
     private Uri localFileUri,serverFileUri;
+    private View progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        progressBar = findViewById(R.id.progressBar);
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         // Initializing filestorage
         fileStorage = FirebaseStorage.getInstance().getReference();// will give reference to the root folder
@@ -158,18 +160,22 @@ public class SignUpActivity extends AppCompatActivity {
         // First we need to upload the image
         String strFileName = firebaseUser.getUid() + ".jpg";
 
+        progressBar.setVisibility(View.VISIBLE);
         final StorageReference fileRef = fileStorage.child(NodeNames.IMAGES + "/" +strFileName); // refernce to a particular destination where the file can be uploaded
         fileRef.putFile(localFileUri).addOnCompleteListener(task -> {
+            progressBar.setVisibility(View.GONE);
            if(task.isSuccessful()){
                // we need to update the location of the file in the server for Users realtime database
                fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                   serverFileUri = uri;
+                   progressBar.setVisibility(View.VISIBLE);
                   // now we need to update the User profile in realtime database with the link of Profile Picture stored in Firebase Storage
                    UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                            .setDisplayName(binding.etName.getText().toString().trim())
                            .setPhotoUri(serverFileUri)
                            .build();
                    firebaseUser.updateProfile(request).addOnCompleteListener(task1 -> {
+                       progressBar.setVisibility(View.GONE);
                        if(task1.isSuccessful()){
                            // Updating of user profile is succesful
                            // Last node for reference of the data
@@ -183,8 +189,10 @@ public class SignUpActivity extends AppCompatActivity {
                            hashMap.put(NodeNames.ONLINE,getResources().getString(R.string.online));
                            hashMap.put(NodeNames.PHOTO,serverFileUri.getPath());
 
+                           progressBar.setVisibility(View.VISIBLE);
                            // pushing the data to the child node
                            databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task2 -> {
+                               progressBar.setVisibility(View.GONE);
                                if(task2.isSuccessful()){
                                    // navigate to LoginScreen
                                    Toast.makeText(SignUpActivity.this,getString(R.string.signup_success),Toast.LENGTH_SHORT).show();
@@ -213,10 +221,12 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void updateOnlyName(){
         // Updating User details in the realtime database
+        progressBar.setVisibility(View.VISIBLE);
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setDisplayName(binding.etName.toString().trim())
                 .build();
         firebaseUser.updateProfile(request).addOnCompleteListener(task -> {
+            progressBar.setVisibility(View.GONE);
            if(task.isSuccessful()){
                // Getting the UID of the user
                Toast.makeText(SignUpActivity.this, "Profile Updation Successful,FireBaseUser", Toast.LENGTH_SHORT).show();
@@ -233,8 +243,10 @@ public class SignUpActivity extends AppCompatActivity {
                hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
                hashMap.put(NodeNames.ONLINE,getResources().getString(R.string.online));
                hashMap.put(NodeNames.PHOTO,"");
+               progressBar.setVisibility(View.VISIBLE);
 
                databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task1 -> {
+                   progressBar.setVisibility(View.GONE);
                    if(task1.isSuccessful()){
                        Toast.makeText(SignUpActivity.this,getString(R.string.signup_success), Toast.LENGTH_SHORT).show();
                        startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
@@ -277,8 +289,10 @@ public class SignUpActivity extends AppCompatActivity {
         }
         // Registering with Firebase
         else{
+            progressBar.setVisibility(View.VISIBLE);
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+                progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful()){
                     // geting the firebase user
                     firebaseUser = firebaseAuth.getCurrentUser();

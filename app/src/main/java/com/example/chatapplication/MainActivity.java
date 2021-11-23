@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     // TODO : Profile Picture not able take from External Storage
     // TODO : UI Fault ResetPasswordActivity
+    // TODO : Integrate Connect Me App with this app
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

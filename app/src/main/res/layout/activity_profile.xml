@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".profile.ProfileActivity">
 
+
+    <include
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        layout="@layout/custom_progressbar"/>
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ImageViewdefaultProfile"
         android:layout_width="120dp"

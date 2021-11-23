@@ -49,10 +49,12 @@ public class ProfileActivity extends AppCompatActivity {
     // StorageReference for static file storage
     private StorageReference fileStorage;
     private Uri localFileUri,serverFileUri;
+    private View progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        progressBar = findViewById(R.id.progressBar);
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
@@ -159,6 +161,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void removePhoto(){
 
+        progressBar.setVisibility(View.VISIBLE);
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setDisplayName(binding.etName.getText().toString().trim())
                 .setPhotoUri(null)
@@ -178,6 +181,7 @@ public class ProfileActivity extends AppCompatActivity {
                 hashMap.put(NodeNames.PHOTO,"");
 
                 databaseReference.child(userId).setValue(hashMap).addOnCompleteListener(task1 -> {
+                    progressBar.setVisibility(View.GONE);
                     if(task1.isSuccessful()){
                         Toast.makeText(ProfileActivity.this, "Profile Picture Removed Successfully", Toast.LENGTH_SHORT).show();
                     }
@@ -185,6 +189,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
             else{
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(ProfileActivity.this, "Error in removing Profile Picture", Toast.LENGTH_SHORT).show();
             }
         });
@@ -290,6 +295,7 @@ public class ProfileActivity extends AppCompatActivity {
         // First we need to upload the image
         String strFileName = firebaseUser.getUid() + ".jpg";
 
+        progressBar.setVisibility(View.VISIBLE);
         final StorageReference fileRef = fileStorage.child(NodeNames.IMAGES + "/" +strFileName); // refernce to a particular destination where the file can be uploaded
         fileRef.putFile(localFileUri).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
@@ -317,6 +323,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                             // pushing the data to the child node
                             databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task2 -> {
+                                progressBar.setVisibility(View.GONE);
                                 if(task2.isSuccessful()){
                                     finish();
                                 }
@@ -326,6 +333,7 @@ public class ProfileActivity extends AppCompatActivity {
                             });
                         }
                         else{
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(ProfileActivity.this,getString(R.string.user_updation_failed,task.getException()), Toast.LENGTH_LONG).show();
                             Log.i("SignUpActivity","Failed to Update profile using firebaseUser.updateProfile()");
                         }
@@ -336,6 +344,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
             else{
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(ProfileActivity.this, "Error in Syncing Profile picture", Toast.LENGTH_SHORT).show();
             }
         });
@@ -344,6 +353,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void updateOnlyName(){
         // Updating User details in the realtime database
+        progressBar.setVisibility(View.VISIBLE);
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setDisplayName(binding.etName.getText().toString().trim())
                 .build();
@@ -366,6 +376,7 @@ public class ProfileActivity extends AppCompatActivity {
                 hashMap.put(NodeNames.PHOTO,"");
 
                 databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task1 -> {
+                    progressBar.setVisibility(View.GONE);
                     if(task1.isSuccessful()){
                         Toast.makeText(ProfileActivity.this,getString(R.string.profile_updated_succ), Toast.LENGTH_SHORT).show();
                         finish();
@@ -377,6 +388,7 @@ public class ProfileActivity extends AppCompatActivity {
                 });
             }
             else{
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(ProfileActivity.this,getString(R.string.user_updation_failed,task.getException()), Toast.LENGTH_LONG).show();
                 Log.i("SignUpActivity","Failed to Update profile using firebaseUser.updateProfile()");
             }
