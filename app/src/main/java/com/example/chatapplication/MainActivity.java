@@ -13,7 +13,7 @@ import com.example.chatapplication.profile.ProfileActivity;
 public class MainActivity extends AppCompatActivity {
 
     // TODO : Profile Picture not able take from External Storage
-    // TODO : UI Fault ResetPasswordActivity
+    // TODO : ProgressBar Buggy in ProfileActivity SignUpActivity
     // TODO : Integrate Connect Me App with this app
 
     @Override

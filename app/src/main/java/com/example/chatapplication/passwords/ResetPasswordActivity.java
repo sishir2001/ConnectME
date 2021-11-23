@@ -15,11 +15,11 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
     private ActivityResetPasswordBinding binding;
     private String email;
-    private View progressBar;
+//    private View progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        progressBar = findViewById(R.id.progressBar);
+//        progressBar = findViewById(R.id.progressBar);
         binding  = ActivityResetPasswordBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.buttonResetPassword.setOnClickListener(view -> clickedPasswordResetBtn());
@@ -36,9 +36,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
         else{
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-            progressBar.setVisibility(View.VISIBLE);
+//            progressBar.setVisibility(View.VISIBLE);
             firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
-                progressBar.setVisibility(View.GONE);
+//                progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful()){
                     binding.llResetPassword.setVisibility(View.GONE);
                     binding.llResetPassword.setVisibility(View.VISIBLE);

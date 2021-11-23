@@ -12,6 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApplication">
         <activity
+            android:name=".slideInfo.slideinfoActivity"
+            android:theme="@style/Theme.ChatApplication.NoActionBar"
+            android:exported="false" />
+        <activity
+            android:name=".splash.SplashActivity"
+            android:theme="@style/Theme.ChatApplication.NoActionBar"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".passwords.ResetPasswordActivity"
             android:exported="false" />
         <activity
@@ -28,13 +42,7 @@
             android:exported="false" />
         <activity
             android:name=".Authentication.LoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true"></activity>
     </application>
 
 </manifest>

@@ -15,11 +15,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     private ActivityChangePasswordBinding binding ;
     private String password,confirmPassword;
-    private View progressBar;
+//    private View progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        progressBar = findViewById(R.id.progressBar);
+//        progressBar = findViewById(R.id.progressBar);
         binding = ActivityChangePasswordBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
@@ -40,13 +40,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
             binding.etConfirmPassword.setError(getString(R.string.passwords_not_matching));
         }
         else{
-            progressBar.setVisibility(View.VISIBLE);
+//            progressBar.setVisibility(View.VISIBLE);
             // all the edit texts are properly filled
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
             if(firebaseUser!=null){
                 firebaseUser.updatePassword(password).addOnCompleteListener(task -> {
-                    progressBar.setVisibility(View.GONE);
+//                    progressBar.setVisibility(View.GONE);
                     if(task.isSuccessful()){
                         Toast.makeText(ChangePasswordActivity.this,getString(R.string.password_success_update),Toast.LENGTH_SHORT).show();
                         finish();

@@ -13,6 +13,7 @@ import com.example.chatapplication.MainActivity;
 import com.example.chatapplication.R;
 import com.example.chatapplication.databinding.ActivityLoginBinding;
 import com.example.chatapplication.passwords.ResetPasswordActivity;
+import com.example.chatapplication.splash.SplashActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -53,22 +54,23 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Checking whether user is already logged
-        Log.i("LoginActivity","Inside onStart()");
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        if(firebaseUser != null){
-            // User is already logged in
-            Toast.makeText(LoginActivity.this,"User is already loggedin "+firebaseUser.getEmail(),Toast.LENGTH_LONG).show();
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        }
-        else{
-            Toast.makeText(LoginActivity.this,"User is not loggedin ",Toast.LENGTH_LONG).show();
-        }
-        // else an user must login
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        // Checking whether user is already logged
+//        Log.i("LoginActivity","Inside onStart()");
+//        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+//        if(firebaseUser != null){
+//            // User is already logged in
+//            Toast.makeText(LoginActivity.this,"User is already loggedin "+firebaseUser.getEmail(),Toast.LENGTH_LONG).show();
+//            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+//        }
+//        else{
+//            Toast.makeText(LoginActivity.this,"User is not loggedin ",Toast.LENGTH_LONG).show();
+//        }
+//        // else an user must login
+//    }
+
 
     //    public void clickedLoginBtn(View view){
     private void clickedLoginBtn(){

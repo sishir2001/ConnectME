@@ -46,4 +46,12 @@
     <string name="failed_to_send_email">Failed to send email</string>
     <string name="reset_timer">Reset : %1$s</string>
     <string name="please_wait">Please Wait</string>
+    <string name="connect">Connect</string>
+    <string name="page_1">You are few steps away from connecting people</string>
+    <string name="page_2">ConnectMe lets you connect with people with just few steps</string>
+    <string name="page_3">Login/Signup with your credentials</string>
+    <string name="page_4">Access your contacts and invite them to join</string>
+    <string name="page_5">Select people you want to chat with</string>
+    <string name="page_6">Enjoy connecting with people by pressing connect me button at the bottom !</string>
+    <string name="image">Image</string>
 </resources>

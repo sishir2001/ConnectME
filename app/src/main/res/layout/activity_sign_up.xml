@@ -9,8 +9,13 @@
 
     <include
         android:id="@+id/progressBar"
+        layout="@layout/custom_progressbar"
         android:visibility="gone"
-        layout="@layout/custom_progressbar"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ImageViewdefaultProfile"
         android:layout_width="120dp"
