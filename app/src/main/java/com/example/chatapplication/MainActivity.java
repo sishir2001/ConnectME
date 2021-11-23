@@ -12,6 +12,9 @@ import com.example.chatapplication.profile.ProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    // TODO : Profile Picture not able take from External Storage
+    // TODO : UI Fault ResetPasswordActivity
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

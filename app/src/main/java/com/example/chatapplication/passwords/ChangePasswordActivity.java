@@ -21,7 +21,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         binding = ActivityChangePasswordBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-        binding.buttonSavePassword.setOnClickListener(view1 -> clickedChangePassBtn());
+        binding.buttonResetPassword.setOnClickListener(view1 -> clickedChangePassBtn());
     }
     private void clickedChangePassBtn(){
         // verify the edittext

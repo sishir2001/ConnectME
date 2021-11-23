@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApplication">
         <activity
+            android:name=".passwords.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".passwords.ChangePasswordActivity"
             android:exported="false" />
         <activity

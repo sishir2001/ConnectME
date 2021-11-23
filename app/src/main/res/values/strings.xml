@@ -38,4 +38,11 @@
     <string name="change_password">Change Password</string>
     <string name="password_success_update">\"Password updated successfully \"</string>
     <string name="something_went_wrong">Something went wrong : %1$s</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="reset_password_intructions">"Reset Password Instructions has been sent on : %1$s "</string>
+    <string name="reset">reset</string>
+    <string name="close">close</string>
+    <string name="something_went_wrong_exep">Something Went Wrong : %1$s</string>
+    <string name="failed_to_send_email">Failed to send email</string>
+    <string name="reset_timer">Reset : %1$s</string>
 </resources>

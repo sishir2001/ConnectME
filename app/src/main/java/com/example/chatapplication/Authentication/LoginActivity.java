@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.chatapplication.MainActivity;
 import com.example.chatapplication.R;
 import com.example.chatapplication.databinding.ActivityLoginBinding;
+import com.example.chatapplication.passwords.ResetPasswordActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -42,6 +43,10 @@ public class LoginActivity extends AppCompatActivity {
         binding.textViewSignUp.setOnClickListener(view1 -> {
             // intent to SignUp Activity
             startActivity(new Intent(LoginActivity.this,SignUpActivity.class));
+        });
+        // click listener for forgotpassword
+        binding.textViewForgotPassWord.setOnClickListener(view1 -> {
+            startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
         });
     }
 
