@@ -26,6 +26,7 @@ import com.example.chatapplication.Authentication.LoginActivity;
 import com.example.chatapplication.R;
 import com.example.chatapplication.common.NodeNames;
 import com.example.chatapplication.databinding.ActivityProfileBinding;
+import com.example.chatapplication.passwords.ChangePasswordActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -92,6 +93,11 @@ public class ProfileActivity extends AppCompatActivity {
             firebaseAuth.signOut();
             startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
             finish(); // even though user clicks the back button, he cannot navigate to this activity
+        });
+
+        // setting click listerner to change password text view
+        binding.textViewChangePassword.setOnClickListener(view1 -> {
+            startActivity(new Intent(ProfileActivity.this, ChangePasswordActivity.class));
         });
 
     }

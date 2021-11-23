@@ -267,10 +267,10 @@ public class SignUpActivity extends AppCompatActivity {
             binding.etName.setError(getString(R.string.enter_name));
         }
         else if(password.equals("")){
-            binding.etName.setError(getString(R.string.enter_password));
+            binding.etPassword.setError(getString(R.string.enter_password));
         }
         else if(confirmPassword.equals("")){
-            binding.etName.setError(getString(R.string.enter_confirm_password));
+            binding.etConfirmPassword.setError(getString(R.string.enter_confirm_password));
         }
         else if(!password.equals(confirmPassword)){
             binding.etConfirmPassword.setError(getString(R.string.passwords_not_matching));
