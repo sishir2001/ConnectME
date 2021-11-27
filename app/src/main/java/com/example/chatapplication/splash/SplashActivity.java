@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -74,6 +75,15 @@ public class SplashActivity extends AppCompatActivity {
 
         // start thread
         background.start();
+        // Helps when the app is used from stack !
+//        new Handler().postDelayed(() -> {
+//            Intent i=new Intent(getBaseContext(), slideinfoActivity.class);
+//            startActivity(i);
+//
+//            //Remove activity
+//            finish();
+//
+//        },5000);
     }
 //    @Override
 //    protected void onStart() {
@@ -109,5 +119,11 @@ public class SplashActivity extends AppCompatActivity {
 //            Toast.makeText(SplashActivity.this,"User is not loggedin ",Toast.LENGTH_LONG).show();
 //            startActivity(new Intent(SplashActivity.this,slideinfoActivity.class));
 //        }
+//    }
+
+//    @Override
+//    protected void onRestart() {
+//        super.onRestart();
+//
 //    }
 }
