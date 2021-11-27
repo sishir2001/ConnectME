@@ -8,7 +8,7 @@
 
 
     <include
-        android:id="@+id/progressBar"
+        android:id="@+id/displayProgressBar"
         android:visibility="gone"
         layout="@layout/custom_progressbar"/>
     <de.hdodenhof.circleimageview.CircleImageView

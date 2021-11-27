@@ -8,13 +8,12 @@
 
 
     <include
-        android:id="@+id/progressBar"
+        android:id="@+id/layoutProgressbar"
         layout="@layout/custom_progressbar"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

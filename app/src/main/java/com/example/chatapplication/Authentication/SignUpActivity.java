@@ -19,8 +19,10 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.chatapplication.MessageActivity;
 import com.example.chatapplication.R;
 import com.example.chatapplication.common.NodeNames;
+import com.example.chatapplication.common.Util;
 import com.example.chatapplication.databinding.ActivitySignUpBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -66,6 +68,7 @@ public class SignUpActivity extends AppCompatActivity {
         // Reading External Storage is a dangerous type of permission -> first we need to check the permission of the user , else take the permission from the user
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/*");
             startActivityForResult(intent,101); // The request code can be any numeber, its just for reference
         }
         else{
@@ -126,6 +129,10 @@ public class SignUpActivity extends AppCompatActivity {
         if(requestCode == 102){
             // a random choosen while requesting for permission
             Log.i("SignUpActivity","Request code of 102 matched");
+            Log.i("SignUpActivity",""+grantResults[0]+" , "+PackageManager.PERMISSION_GRANTED);
+            Log.i("SignUpActivity",""+grantResults[0]+" , "+PackageManager.PERMISSION_DENIED);
+            Log.i("SignUpActivity",""+grantResults[0]+" , "+PackageManager.GET_PERMISSIONS);
+
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 // we can access the external storge
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -162,60 +169,60 @@ public class SignUpActivity extends AppCompatActivity {
 
 //        progressBar.setVisibility(View.VISIBLE);
         final StorageReference fileRef = fileStorage.child(NodeNames.IMAGES + "/" +strFileName); // refernce to a particular destination where the file can be uploaded
+        // checking internet connection before sending the pic to Firebase Storage
         fileRef.putFile(localFileUri).addOnCompleteListener(task -> {
-           if(task.isSuccessful()){
-               // we need to update the location of the file in the server for Users realtime database
-               fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                  serverFileUri = uri;
-                  // now we need to update the User profile in realtime database with the link of Profile Picture stored in Firebase Storage
-                   UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
-                           .setDisplayName(binding.etName.getText().toString().trim())
-                           .setPhotoUri(serverFileUri)
-                           .build();
-                   firebaseUser.updateProfile(request).addOnCompleteListener(task1 -> {
-                       if(task1.isSuccessful()){
-                           // Updating of user profile is succesful
-                           // Last node for reference of the data
-                           String userID = firebaseUser.getUid();
-                           // if completed update the realtime database
-                           databaseReference = FirebaseDatabase.getInstance("https://chatapplication-abf5b-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
-                           // Hashmap is like schema for database
-                           HashMap<String,String> hashMap = new HashMap<>();
-                           hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
-                           hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
-                           hashMap.put(NodeNames.ONLINE,getResources().getString(R.string.online));
-                           hashMap.put(NodeNames.PHOTO,serverFileUri.getPath());
+            if(task.isSuccessful()){
+                // we need to update the location of the file in the server for Users realtime database
+                fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    serverFileUri = uri;
+                    // now we need to update the User profile in realtime database with the link of Profile Picture stored in Firebase Storage
+                    UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(binding.etName.getText().toString().trim())
+                            .setPhotoUri(serverFileUri)
+                            .build();
+                    firebaseUser.updateProfile(request).addOnCompleteListener(task1 -> {
+                        if(task1.isSuccessful()){
+                            // Updating of user profile is succesful
+                            // Last node for reference of the data
+                            String userID = firebaseUser.getUid();
+                            // if completed update the realtime database
+                            databaseReference = FirebaseDatabase.getInstance("https://chatapplication-abf5b-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
+                            // Hashmap is like schema for database
+                            HashMap<String,String> hashMap = new HashMap<>();
+                            hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
+                            hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
+                            hashMap.put(NodeNames.ONLINE,getResources().getString(R.string.online));
+                            hashMap.put(NodeNames.PHOTO,serverFileUri.getPath());
 
 //                           progressBar.setVisibility(View.VISIBLE);
-                           // pushing the data to the child node
-                           databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task2 -> {
+                            // pushing the data to the child node
+                            databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task2 -> {
 //                               progressBar.setVisibility(View.GONE);
-                               if(task2.isSuccessful()){
-                                   // navigate to LoginScreen
-                                   Toast.makeText(SignUpActivity.this,getString(R.string.signup_success),Toast.LENGTH_SHORT).show();
-                               }
-                               else{
-                                   Toast.makeText(SignUpActivity.this,"Syncing of user profile with firebase error",Toast.LENGTH_SHORT).show();
-                               }
-                           });
-                       }
-                       else{
+                                if(task2.isSuccessful()){
+                                    // navigate to LoginScreen
+                                    Toast.makeText(SignUpActivity.this,getString(R.string.signup_success),Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    Toast.makeText(SignUpActivity.this,"Syncing of user profile with firebase error",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                        else{
 //                           progressBar.setVisibility(View.GONE);
-                           Toast.makeText(SignUpActivity.this,getString(R.string.user_updation_failed,task.getException()), Toast.LENGTH_LONG).show();
-                           Log.i("SignUpActivity","Failed to Update profile using firebaseUser.updateProfile()");
-                       }
+                            Toast.makeText(SignUpActivity.this,getString(R.string.user_updation_failed,task.getException()), Toast.LENGTH_LONG).show();
+                            Log.i("SignUpActivity","Failed to Update profile using firebaseUser.updateProfile()");
+                        }
 
-                   });
+                    });
 
-               });
+                });
 
-           }
-           else{
+            }
+            else{
 //               progressBar.setVisibility(View.GONE);
-               Toast.makeText(SignUpActivity.this, "Error in Syncing Profile picture", Toast.LENGTH_SHORT).show();
-           }
+                Toast.makeText(SignUpActivity.this, "Error in Syncing Profile picture", Toast.LENGTH_SHORT).show();
+            }
         });
-
     }
 
     private void updateOnlyName(){
@@ -224,41 +231,42 @@ public class SignUpActivity extends AppCompatActivity {
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setDisplayName(binding.etName.toString().trim())
                 .build();
+        // checking the internet connection before requeting for userprofile changes
         firebaseUser.updateProfile(request).addOnCompleteListener(task -> {
-           if(task.isSuccessful()){
-               // Getting the UID of the user
-               Toast.makeText(SignUpActivity.this, "Profile Updation Successful,FireBaseUser", Toast.LENGTH_SHORT).show();
-               String userID = firebaseUser.getUid();
-               // We need a databaseReference object to update the user details
-               Log.i("SignUpActivity","Before initializing database reference ");
-               // TODO : To get reference of database other than in US region , we need to pass database url to getInstance method
-               databaseReference = FirebaseDatabase.getInstance("https://chatapplication-abf5b-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
-               Log.i("SignUpActivity","After initializing database reference ");
+            if(task.isSuccessful()){
+                // Getting the UID of the user
+                Toast.makeText(SignUpActivity.this, "Profile Updation Successful,FireBaseUser", Toast.LENGTH_SHORT).show();
+                String userID = firebaseUser.getUid();
+                // We need a databaseReference object to update the user details
+                Log.i("SignUpActivity","Before initializing database reference ");
+                // TODO : To get reference of database other than in US region , we need to pass database url to getInstance method
+                databaseReference = FirebaseDatabase.getInstance("https://chatapplication-abf5b-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
+                Log.i("SignUpActivity","After initializing database reference ");
 
-               // Hashmap is similar to dictionary in python
-               HashMap<String,String> hashMap = new HashMap<>();
-               hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
-               hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
-               hashMap.put(NodeNames.ONLINE,getResources().getString(R.string.online));
-               hashMap.put(NodeNames.PHOTO,"");
+                // Hashmap is similar to dictionary in python
+                HashMap<String,String> hashMap = new HashMap<>();
+                hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
+                hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
+                hashMap.put(NodeNames.ONLINE,getResources().getString(R.string.online));
+                hashMap.put(NodeNames.PHOTO,"");
 
-               databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task1 -> {
+                databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task1 -> {
 //                   progressBar.setVisibility(View.GONE);
-                   if(task1.isSuccessful()){
-                       Toast.makeText(SignUpActivity.this,getString(R.string.signup_success), Toast.LENGTH_SHORT).show();
-                       startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
-                   }
-                   else{
-                       Toast.makeText(SignUpActivity.this, "Updation of Hashmap of userProfile failed : "+task1.getException(), Toast.LENGTH_SHORT).show();
-                       Log.i("SignUpActivity","Updation of user profile failed : "+task1.getException());
-                   }
-               });
-           }
-           else{
+                    if(task1.isSuccessful()){
+                        Toast.makeText(SignUpActivity.this,getString(R.string.signup_success), Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                    }
+                    else{
+                        Toast.makeText(SignUpActivity.this, "Updation of Hashmap of userProfile failed : "+task1.getException(), Toast.LENGTH_SHORT).show();
+                        Log.i("SignUpActivity","Updation of user profile failed : "+task1.getException());
+                    }
+                });
+            }
+            else{
 //               progressBar.setVisibility(View.GONE);
-               Toast.makeText(SignUpActivity.this,getString(R.string.user_updation_failed,task.getException()), Toast.LENGTH_LONG).show();
-               Log.i("SignUpActivity","Failed to Update profile using firebaseUser.updateProfile()");
-           }
+                Toast.makeText(SignUpActivity.this,getString(R.string.user_updation_failed,task.getException()), Toast.LENGTH_LONG).show();
+                Log.i("SignUpActivity","Failed to Update profile using firebaseUser.updateProfile()");
+            }
         });
     }
     private void signUpBtnClicked(){
@@ -289,23 +297,29 @@ public class SignUpActivity extends AppCompatActivity {
         else{
 //            progressBar.setVisibility(View.VISIBLE);
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+            if(Util.connectionAvailable(this)){
+                firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
 //                progressBar.setVisibility(View.GONE);
-                if(task.isSuccessful()){
-                    // geting the firebase user
-                    firebaseUser = firebaseAuth.getCurrentUser();
-                    Toast.makeText(SignUpActivity.this,"Creating User in Authentication FireBase is done", Toast.LENGTH_LONG).show();
-                    if(localFileUri!=null){
-                        updatePicAndName();
+                    if(task.isSuccessful()){
+                        // geting the firebase user
+                        firebaseUser = firebaseAuth.getCurrentUser();
+                        Toast.makeText(SignUpActivity.this,"Creating User in Authentication FireBase is done", Toast.LENGTH_LONG).show();
+                        if(localFileUri!=null){
+                            updatePicAndName();
+                        }
+                        else{
+                            updateOnlyName();
+                        }
                     }
                     else{
-                        updateOnlyName();
+                        Toast.makeText(SignUpActivity.this,getString(R.string.signup_failed,task.getException()), Toast.LENGTH_LONG).show();
                     }
-                }
-                else{
-                    Toast.makeText(SignUpActivity.this,getString(R.string.signup_failed,task.getException()), Toast.LENGTH_LONG).show();
-                }
-            });
+                });
+            }
+            else {
+                startActivity(new Intent(SignUpActivity.this,MessageActivity.class));
+            }
+            // adds data to FireBaseAuthentication
         }
     }
 }

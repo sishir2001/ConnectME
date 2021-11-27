@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
     <include
-        android:id="@+id/progressBar"
+        android:id="@+id/displayProgressBar"
         layout="@layout/custom_progressbar"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

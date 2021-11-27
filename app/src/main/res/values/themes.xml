@@ -24,6 +24,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/secondaryDarkColor</item>
         <!-- Customize your theme here. -->
+<!--        <item name="background">@color/secondaryDarkColor</item>-->
     </style>
 
     <style name="Theme.ChatApplication.NoActionBar">

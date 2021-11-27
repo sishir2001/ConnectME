@@ -23,8 +23,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.chatapplication.Authentication.LoginActivity;
+import com.example.chatapplication.MessageActivity;
 import com.example.chatapplication.R;
 import com.example.chatapplication.common.NodeNames;
+import com.example.chatapplication.common.Util;
 import com.example.chatapplication.databinding.ActivityProfileBinding;
 import com.example.chatapplication.passwords.ChangePasswordActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -70,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
             // Setting the text of Edit Texts
             // Initializing the required ones
             binding.etEmail.setText(firebaseUser.getEmail());
-            binding.etName.setText(firebaseUser.getDisplayName().toString());
+            binding.etName.setText(firebaseUser.getDisplayName());
             serverFileUri = firebaseUser.getPhotoUrl();
 
             if(serverFileUri!=null){
@@ -117,12 +119,17 @@ public class ProfileActivity extends AppCompatActivity {
             binding.etEmail.setError(getString(R.string.enter_correct_email));
         }
         else{
-            if(localFileUri!=null){
-                // user has picked a profile picture
-                updatePicAndName();
+            if(Util.connectionAvailable(this)){
+                if(localFileUri!=null){
+                    // user has picked a profile picture
+                    updatePicAndName();
+                }
+                else{
+                    updateOnlyName();
+                }
             }
             else{
-                updateOnlyName();
+                startActivity(new Intent(ProfileActivity.this,MessageActivity.class));
             }
         }
     }
@@ -167,35 +174,42 @@ public class ProfileActivity extends AppCompatActivity {
                 .setPhotoUri(null)
                 .build();
         // sending request to Firebase Realtime database
-        firebaseUser.updateProfile(request).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                // successfully removed the profile picture . but we need to load the default pic
-                binding.ImageViewdefaultProfile.setImageDrawable(getResources().getDrawable(R.drawable.default_profile));
-                databaseReference = FirebaseDatabase.getInstance("https://chatapplication-abf5b-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
+        if(Util.connectionAvailable(this)){
+            firebaseUser.updateProfile(request).addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    // successfully removed the profile picture . but we need to load the default pic
+                    binding.ImageViewdefaultProfile.setImageDrawable(getResources().getDrawable(R.drawable.default_profile));
+                    databaseReference = FirebaseDatabase.getInstance("https://chatapplication-abf5b-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
 
-                String userId = firebaseUser.getUid();
-                HashMap<String,String> hashMap = new HashMap<>();
-                hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
-                hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
-                hashMap.put(NodeNames.ONLINE,getString(R.string.online));
-                hashMap.put(NodeNames.PHOTO,"");
+                    String userId = firebaseUser.getUid();
+                    HashMap<String,String> hashMap = new HashMap<>();
+                    hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
+                    hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
+                    hashMap.put(NodeNames.ONLINE,getString(R.string.online));
+                    hashMap.put(NodeNames.PHOTO,"");
 
-                databaseReference.child(userId).setValue(hashMap).addOnCompleteListener(task1 -> {
+                    databaseReference.child(userId).setValue(hashMap).addOnCompleteListener(task1 -> {
 //                    progressBar.setVisibility(View.GONE);
-                    if(task1.isSuccessful()){
-                        Toast.makeText(ProfileActivity.this, "Profile Picture Removed Successfully", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        if(task1.isSuccessful()){
+                            Toast.makeText(ProfileActivity.this, "Profile Picture Removed Successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-            }
-            else{
+                }
+                else{
 //                progressBar.setVisibility(View.GONE);
-                Toast.makeText(ProfileActivity.this, "Error in removing Profile Picture", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    Toast.makeText(ProfileActivity.this, "Error in removing Profile Picture", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+        else{
+            startActivity(new Intent(ProfileActivity.this, MessageActivity.class));
+        }
     }
 
     private void pickImage(){
+        // TODO : Modify the code, so that user is able to choose an image from gallery or external storage
         // when the user clicks on the default profile pic to choose a pic from gallery
         // Permission needs to be taken in the manifest file
         // Reading External Storage is a dangerous type of permission -> first we need to check the permission of the user , else take the permission from the user

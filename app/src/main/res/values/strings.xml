@@ -54,4 +54,7 @@
     <string name="page_5">Select people you want to chat with</string>
     <string name="page_6">Enjoy connecting with people by pressing connect me button at the bottom !</string>
     <string name="image">Image</string>
+    <string name="check_internet_connection">"Check internet connection "</string>
+    <string name="retry">retry</string>
+    <string name="no_internet">No internet</string>
 </resources>

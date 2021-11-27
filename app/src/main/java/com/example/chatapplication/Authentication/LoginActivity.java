@@ -10,15 +10,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.chatapplication.MainActivity;
+import com.example.chatapplication.MessageActivity;
 import com.example.chatapplication.R;
+import com.example.chatapplication.common.Util;
 import com.example.chatapplication.databinding.ActivityLoginBinding;
 import com.example.chatapplication.passwords.ResetPasswordActivity;
-import com.example.chatapplication.splash.SplashActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.displayProgressBar);
         Log.i("LoginActivity","Inside onStart()");
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // initializing FireBase
         mAuth = FirebaseAuth.getInstance();
-        progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.displayProgressBar);
 
         // setting click listener on Login Button
         binding.buttonLogin.setOnClickListener(view1 -> clickedLoginBtn());
@@ -90,21 +90,29 @@ public class LoginActivity extends AppCompatActivity {
             // password and email are not empty
             // Need to use firebase for authentication
             Log.i("LoginActivity","In Else, clickedLoginBtn()");
-            mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    progressBar.setVisibility(View.GONE);
-                    if(task.isSuccessful()){
-                        // navigate to Chat Activity
-                        Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            // Checking connection before contacting the Firebase Authentication
+            if(Util.connectionAvailable(this)){
+                mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressBar.setVisibility(View.GONE);
+                        if(task.isSuccessful()){
+                            // navigate to Chat Activity
+                            Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        }
+                        else{
+                            // Login Unsuccesful
+                            Toast.makeText(LoginActivity.this, getString(R.string.login_failed,task.getException()), Toast.LENGTH_LONG).show();
+                        }
                     }
-                    else{
-                        // Login Unsuccesful
-                        Toast.makeText(LoginActivity.this, getString(R.string.login_failed,task.getException()), Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
+                });
+            }
+            else{
+                // Make the Progres bar gone
+                progressBar.setVisibility(View.GONE);
+                startActivity(new Intent(LoginActivity.this, MessageActivity.class));
+            }
         }
     }
 }
