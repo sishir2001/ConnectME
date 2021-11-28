@@ -69,4 +69,5 @@
     <string name="send_friend_request">send request</string>
     <string name="cancel_friend_request">cancel request</string>
     <string name="failed_to_fetch_data">Failed to fetch data : %1$s</string>
+    <string name="cancel_req_unsuccessful">could\'nt canel the request %1$s</string>
 </resources>

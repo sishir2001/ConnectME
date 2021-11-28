@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import android.widget.Toast;
 import com.example.chatapplication.R;
 import com.example.chatapplication.common.Constants;
 import com.example.chatapplication.common.NodeNames;
-import com.example.chatapplication.common.Util;
 import com.example.chatapplication.databinding.FragmentFindfriendBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,11 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 // TODO : How and where to set clicklisteners on button inside every view of recycler view
 // TODO : How and where to write the logic when the button is clicked
@@ -47,12 +45,13 @@ public class FindfriendFragment extends Fragment {
 
     // Firebase details
     private DatabaseReference databaseReference;
-    private FirebaseUser currentUser;
+    final private FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    private DatabaseReference friendRequestDatabaseReference;
 
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentFindfriendBinding.inflate(inflater,container,false);
@@ -64,8 +63,17 @@ public class FindfriendFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         progressBar = view.findViewById(R.id.customProgressBar);
         // here we need to retrieve the list from internet and map it according to the local storing list
-        databaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        databaseReference = FirebaseDatabase
+                .getInstance(Constants.DATABASE_LINK)
+                .getReference()
+                .child(NodeNames.USERS); // getRefernce gives the refernce to user node
+
+        friendRequestDatabaseReference = FirebaseDatabase
+                .getInstance(Constants.DATABASE_LINK)
+                .getReference()
+                .child(NodeNames.REQ_FRIENDS)
+                .child(currentUser.getUid()); // getRefernce gives the refernce to friend_request node
 
         // initialize the list
         findFriendsModelList = new ArrayList<FindFriendsModel>();
@@ -77,14 +85,13 @@ public class FindfriendFragment extends Fragment {
 
         // fetching a list from realtime database
 
-        if(Util.connectionAvailable(getContext())){
+//        if(Util.connectionAvailable(getContext())){
            fetchUsersList();
-        }
-        else{
-            // if no internet
-            binding.textViewEmpty.setVisibility(View.VISIBLE);
-        }
-
+//        }
+//        else{
+//            // if no internet
+//            binding.textViewEmpty.setVisibility(View.VISIBLE);
+//        }
 
     }
     private void fetchUsersList(){
@@ -101,18 +108,55 @@ public class FindfriendFragment extends Fragment {
 
                 for(DataSnapshot ds:snapshot.getChildren()){
                     // here we need to check the id of the child and current user , so as to not display in the request list
-                    if(currentUser.getUid().equals(ds.getKey())){
+                    String otherUser = ds.getKey();
+                    if(currentUser.getUid().equals(otherUser)){
                         // getKey -> Uid in firebase
+//                        return;
                         continue;
                     }
                     if(ds.child(NodeNames.NAME).getValue()!= null){
                         // if the name is not blank in database
+                        Toast.makeText(getContext(), "Inside You Know 0", Toast.LENGTH_SHORT).show();
                         String fullname = ds.child(NodeNames.NAME).getValue().toString();
                         String photoName = ds.child(NodeNames.PHOTO).getValue().toString();
 
-                        findFriendsModelList.add(new FindFriendsModel(fullname,photoName,ds.getKey(),false));
-                        findFriendsAdapter.notifyDataSetChanged();// whole data will changed
+                        // TODO : check whether the loggedIn user has sent request to this particular user
+                        // need friendReqDatabase Reference
 
+//                        findFriendsModelList.add(new FindFriendsModel(fullname,photoName,ds.getKey(),false));
+//                        findFriendsAdapter.notifyDataSetChanged();// whole data will changed
+
+                        assert otherUser != null;
+                        friendRequestDatabaseReference.child(otherUser).child(NodeNames.REQ_TYPE).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                               if(snapshot.exists()){
+                                   String requestType = snapshot.getValue().toString();
+                                   Toast.makeText(getContext(),requestType, Toast.LENGTH_SHORT).show();
+                                   Log.i("FindFriendFragment",""+requestType);
+                                   if(requestType.equals(Constants.REQ_SENT)){
+                                        findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,true));
+                                        findFriendsAdapter.notifyDataSetChanged();// whole data will changed
+                                   }
+                                   else{
+                                       findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false));
+                                       findFriendsAdapter.notifyDataSetChanged();// whole data will changed
+                                   }
+                               }
+                               else{
+                                   Toast.makeText(getContext(),"snapshot doesnt exist", Toast.LENGTH_SHORT).show();
+                                   findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false));
+                                   findFriendsAdapter.notifyDataSetChanged();// whole data will changed
+                               }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(getContext(), "Inside You Know 1 onCancelled", Toast.LENGTH_SHORT).show();
+                                findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false));
+                                findFriendsAdapter.notifyDataSetChanged();// whole data will changed
+                            }
+                        });
                         progressBar.setVisibility(View.GONE);
                     }
                 }
