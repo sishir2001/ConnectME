@@ -29,22 +29,22 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        Thread background = new Thread() {
-            public void run() {
-                try {
-                    // Thread will sleep for 5 seconds
-                    sleep(5*1000);
-
-                    // After 5 seconds redirect to another intent
-                    Intent i=new Intent(getBaseContext(), slideinfoActivity.class);
-                    startActivity(i);
-
-                    //Remove activity
-                    finish();
-                } catch (Exception e) {
-                }
-            }
-        };
+//        Thread background = new Thread() {
+//            public void run() {
+//                try {
+//                    // Thread will sleep for 5 seconds
+//                    sleep(5*1000);
+//
+//                    // After 5 seconds redirect to another intent
+//                    Intent i=new Intent(getBaseContext(), slideinfoActivity.class);
+//                    startActivity(i);
+//
+//                    //Remove activity
+//                    finish();
+//                } catch (Exception e) {
+//                }
+//            }
+//        };
 
 
 //        getSupportActionBar().hide();
@@ -74,16 +74,16 @@ public class SplashActivity extends AppCompatActivity {
         S.start();
 
         // start thread
-        background.start();
+//        background.start();
         // Helps when the app is used from stack !
-//        new Handler().postDelayed(() -> {
-//            Intent i=new Intent(getBaseContext(), slideinfoActivity.class);
-//            startActivity(i);
-//
-//            //Remove activity
-//            finish();
-//
-//        },5000);
+        new Handler().postDelayed(() -> {
+            Intent i=new Intent(getBaseContext(), slideinfoActivity.class);
+            startActivity(i);
+
+            //Remove activity
+            finish();
+
+        },5000);
     }
 //    @Override
 //    protected void onStart() {

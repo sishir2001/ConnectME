@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Press back button once again", Toast.LENGTH_SHORT).show();
                 backPressed = true;
                 // give the user only 3 sec to press the second back button
+                // runs a new thread other than main thread after the delay
                 new Handler().postDelayed(() -> backPressed = false,3000);
             }
 

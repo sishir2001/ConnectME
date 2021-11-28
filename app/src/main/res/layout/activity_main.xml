@@ -26,7 +26,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
             app:tabIndicatorColor="@color/primaryLightColor"
             app:tabIndicatorHeight="4dp"
             tools:ignore="SpeakableTextPresentCheck" />
