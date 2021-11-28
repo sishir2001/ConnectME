@@ -8,6 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#717070</color>
+    <color name="accept">#13A193</color>
+
 <!--    App Color Pallete-->
     <color name="primaryColor">#42a5f5</color>
     <color name="primaryLightColor">#80d6ff</color>
