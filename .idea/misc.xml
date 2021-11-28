@@ -14,6 +14,7 @@
         <entry key="app/src/main/res/layout/activity_slideinfo.xml" value="0.1911231884057971" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.1911231884057971" />
         <entry key="app/src/main/res/layout/custom_progressbar.xml" value="0.1947463768115942" />
+        <entry key="app/src/main/res/layout/find_friends_layout.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.17889492753623187" />
         <entry key="app/src/main/res/layout/fragment_findfriend.xml" value="0.17889492753623187" />
         <entry key="app/src/main/res/layout/fragment_requests.xml" value="0.17889492753623187" />

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.chatapplication.FindFriends.FindfriendFragment;
 import com.example.chatapplication.databinding.ActivityMainBinding;
 import com.example.chatapplication.profile.ProfileActivity;
 import com.google.android.material.tabs.TabLayout;
