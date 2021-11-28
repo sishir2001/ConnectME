@@ -116,7 +116,7 @@ public class FindfriendFragment extends Fragment {
                     }
                     if(ds.child(NodeNames.NAME).getValue()!= null){
                         // if the name is not blank in database
-                        Toast.makeText(getContext(), "Inside You Know 0", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "Inside You Know 0", Toast.LENGTH_SHORT).show();
                         String fullname = ds.child(NodeNames.NAME).getValue().toString();
                         String photoName = ds.child(NodeNames.PHOTO).getValue().toString();
 
@@ -132,7 +132,7 @@ public class FindfriendFragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                if(snapshot.exists()){
                                    String requestType = snapshot.getValue().toString();
-                                   Toast.makeText(getContext(),requestType, Toast.LENGTH_SHORT).show();
+//                                   Toast.makeText(getContext(),requestType, Toast.LENGTH_SHORT).show();
                                    Log.i("FindFriendFragment",""+requestType);
                                    if(requestType.equals(Constants.REQ_SENT)){
                                         findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,true));
@@ -144,7 +144,7 @@ public class FindfriendFragment extends Fragment {
                                    }
                                }
                                else{
-                                   Toast.makeText(getContext(),"snapshot doesnt exist", Toast.LENGTH_SHORT).show();
+//                                   Toast.makeText(getContext(),"snapshot doesnt exist", Toast.LENGTH_SHORT).show();
                                    findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false));
                                    findFriendsAdapter.notifyDataSetChanged();// whole data will changed
                                }
@@ -152,7 +152,7 @@ public class FindfriendFragment extends Fragment {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(getContext(), "Inside You Know 1 onCancelled", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), "Inside You Know 1 onCancelled", Toast.LENGTH_SHORT).show();
                                 findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false));
                                 findFriendsAdapter.notifyDataSetChanged();// whole data will changed
                             }
