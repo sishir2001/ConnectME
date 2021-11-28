@@ -7,4 +7,5 @@ public class NodeNames {
     public static final String PHOTO = "photo";
     public static final String ONLINE = "online";
     public static final String IMAGES = "images";
+    public static final String REQ_FRIENDS = "friend_requests";
 }

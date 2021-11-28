@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.chatapplication.MessageActivity;
 import com.example.chatapplication.R;
+import com.example.chatapplication.common.Constants;
 import com.example.chatapplication.common.NodeNames;
 import com.example.chatapplication.common.Util;
 import com.example.chatapplication.databinding.ActivitySignUpBinding;
@@ -186,7 +187,7 @@ public class SignUpActivity extends AppCompatActivity {
                             // Last node for reference of the data
                             String userID = firebaseUser.getUid();
                             // if completed update the realtime database
-                            databaseReference = FirebaseDatabase.getInstance("https://chatapplication-abf5b-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
+                            databaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
                             // Hashmap is like schema for database
                             HashMap<String,String> hashMap = new HashMap<>();
                             hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
@@ -240,7 +241,7 @@ public class SignUpActivity extends AppCompatActivity {
                 // We need a databaseReference object to update the user details
                 Log.i("SignUpActivity","Before initializing database reference ");
                 // TODO : To get reference of database other than in US region , we need to pass database url to getInstance method
-                databaseReference = FirebaseDatabase.getInstance("https://chatapplication-abf5b-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
+                databaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
                 Log.i("SignUpActivity","After initializing database reference ");
 
                 // Hashmap is similar to dictionary in python

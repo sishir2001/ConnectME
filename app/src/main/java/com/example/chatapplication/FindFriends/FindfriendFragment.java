@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.chatapplication.R;
+import com.example.chatapplication.common.Constants;
 import com.example.chatapplication.common.NodeNames;
 import com.example.chatapplication.common.Util;
 import com.example.chatapplication.databinding.FragmentFindfriendBinding;
@@ -63,7 +64,7 @@ public class FindfriendFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         progressBar = view.findViewById(R.id.customProgressBar);
         // here we need to retrieve the list from internet and map it according to the local storing list
-        databaseReference = FirebaseDatabase.getInstance("https://chatapplication-abf5b-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
+        databaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // initialize the list

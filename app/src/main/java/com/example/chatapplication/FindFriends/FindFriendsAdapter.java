@@ -14,9 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatapplication.R;
+import com.example.chatapplication.common.Constants;
 import com.example.chatapplication.common.NodeNames;
 import com.google.android.gms.common.internal.service.Common;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -29,6 +32,9 @@ public class FindFriendsAdapter extends RecyclerView.Adapter<FindFriendsAdapter.
     // class variables
     private Context context;
     private List<FindFriendsModel> findFriendsList;
+    private DatabaseReference friendReqDatabaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK)
+            .getReference()
+            .child(NodeNames.REQ_FRIENDS);
 
     public FindFriendsAdapter(Context context, List<FindFriendsModel> findFriendsList) {
         this.context = context;
@@ -61,6 +67,28 @@ public class FindFriendsAdapter extends RecyclerView.Adapter<FindFriendsAdapter.
                 .into(holder.civProfile);
             }
         });
+
+        // adding click listeners
+        holder.btnSendRequest.setOnClickListener(view -> btnReqClicked(holder,position,view));
+        holder.btnSendRequest.setOnClickListener(view -> btnCancelClicked(holder,position,view));
+
+    }
+
+    private void btnReqClicked(@NonNull FindFriendsAdapter.FindFriendsViewHolder holder, int position,View view){
+        // Visisbility changed
+        holder.pbRequest.setVisibility(View.VISIBLE);
+        holder.btnCancelRequest.setVisibility(View.VISIBLE);
+        view.setVisibility(View.GONE);
+
+        // TODO : Update : FriendReq -> SenderUserID -> RecievingUserId -> requestType:Sent/Recieved
+        // Reference to database is needed of node FriendReq
+
+    }
+    private void btnCancelClicked(@NonNull FindFriendsAdapter.FindFriendsViewHolder holder, int position,View view){
+        // Visisbility changed
+        holder.btnSendRequest.setVisibility(View.VISIBLE);
+        holder.pbRequest.setVisibility(View.GONE);
+        view.setVisibility(View.GONE);
 
     }
 
