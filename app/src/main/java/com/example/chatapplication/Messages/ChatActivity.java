@@ -79,6 +79,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 // this method will be called when the user swipes the page
                 currentPage++; // loading the messages according to the pages
 //                binding.srlMessages.setRefreshing(true);
+                Toast.makeText(ChatActivity.this, "currentPage :"+currentPage, Toast.LENGTH_SHORT).show();
                 loadMessages();
             }
         });
