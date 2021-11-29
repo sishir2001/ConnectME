@@ -1,18 +1,21 @@
 package com.example.chatapplication.Chat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.chatapplication.Messages.ChatActivity;
 import com.example.chatapplication.R;
+import com.example.chatapplication.common.Extras;
 import com.example.chatapplication.common.NodeNames;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -58,9 +61,17 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
             }
         });
-
-
-
+        // But this is a bad practice of setting clicklisteners on Items of recyclerView
+        // Setting view listener on the whole chat layout
+        holder.clChatLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // navigate to main activity with the friends user id
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra(Extras.USER_KEY,listElement.getUserId());
+                context.startActivity(intent);
+            }
+        });
 
     }
 
@@ -73,6 +84,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 //        private LinearLayout llchatList;
         private TextView userName,lastMessage,lastMessageTime,unseenCount;
         private CircleImageView civImageViewChat;
+        private ConstraintLayout clChatLayout;
         public ChatListViewHolder(@NonNull View itemView) {
             super(itemView);
             userName = itemView.findViewById(R.id.textViewUserNameChat);
@@ -80,6 +92,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             lastMessage = itemView.findViewById(R.id.textViewlastMessage);
             unseenCount = itemView.findViewById(R.id.textViewUnseenMessageCount);
             civImageViewChat = itemView.findViewById(R.id.civDefaultProfileChat);
+            clChatLayout = itemView.findViewById(R.id.clChatLayout);
         }
     }
 }

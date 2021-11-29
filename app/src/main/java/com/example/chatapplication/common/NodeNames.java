@@ -11,4 +11,10 @@ public class NodeNames {
     public static final String REQ_TYPE = "reques_type";
     public static final String CHAT = "chat";
     public static final String TIMESTAMP = "timestamp";
+    public static final String MSG_ID = "message_id";
+    public static final String MSG = "message";
+    public static final String MSG_FROM = "message_from";
+    public static final String MSG_TIME = "timestamp";
+    public static final String MSG_TYPE = "type";
+    public static final String MESSAGES = "messages" ;
 }

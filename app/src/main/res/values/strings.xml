@@ -73,4 +73,8 @@
     <string name="accept">Accept</string>
     <string name="deny">deny</string>
     <string name="offline">offline</string>
+    <string name="enter_message">Enter message</string>
+    <string name="empty_string" />
+    <string name="msg_send_error">Error : %1$s</string>
+    <string name="message_sent_success">Message sent successfully</string>
 </resources>
