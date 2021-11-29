@@ -7,7 +7,7 @@
     android:paddingBottom="8dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/civDefualtProfile"
+        android:id="@+id/civDefaultProfileChat"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:layout_marginStart="8dp"
@@ -17,55 +17,53 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvFullName"
+        android:id="@+id/textViewUserNameChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="3dp"
-        android:text="TextView"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/grey"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/civDefualtProfile"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/textViewlastMessage"
+        app:layout_constraintStart_toEndOf="@+id/civDefaultProfileChat"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="User Name" />
 
-    <Button
-        android:id="@+id/btnSendFriendRequest"
+    <TextView
+        android:id="@+id/textViewlastMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="3dp"
-        android:text="@string/send_friend_request"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/civDefualtProfile"
-        app:layout_constraintStart_toEndOf="@+id/civDefualtProfile"
-        app:layout_constraintTop_toBottomOf="@+id/tvFullName" />
+        android:textColor="@color/grey"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/civDefaultProfileChat"
+        app:layout_constraintTop_toBottomOf="@+id/textViewUserNameChat"
+        tools:text="FuckYou" />
 
-    <Button
-        android:id="@+id/btnCancelRequest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:backgroundTint="@android:color/holo_red_dark"
-        android:text="@string/cancel_friend_request"
-        android:textSize="10sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/civDefualtProfile"
-        app:layout_constraintStart_toEndOf="@+id/civDefualtProfile"
-        app:layout_constraintTop_toBottomOf="@+id/tvFullName"
-        tools:visibility="visible" />
-
-    <ProgressBar
-        android:id="@+id/pbSendReq"
-        style="?android:attr/progressBarStyle"
+    <TextView
+        android:id="@+id/textViewUnseenMessageCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:visibility="gone"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/red_circle"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textViewLastMsgTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        tools:text="3" />
+
+    <TextView
+        android:id="@+id/textViewLastMsgTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textViewUnseenMessageCount"
+        app:layout_constraintTop_toBottomOf="@+id/textViewUnseenMessageCount"
+        tools:text="9:00" />
 
     <View
         android:layout_width="match_parent"
@@ -75,5 +73,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
