@@ -75,15 +75,20 @@ public class FindFriendsAdapter extends RecyclerView.Adapter<FindFriendsAdapter.
         });
 
         // checking for the view of layout
-        if(listElement.isSendRequest()){
+        if(listElement.isAcceptRequest()){
+           // Request accepted so buttons should be gone
+            holder.btnCancelRequest.setVisibility(View.GONE);
+            holder.btnSendRequest.setVisibility(View.GONE);
+        }
+        else if(listElement.isSendRequest()){
             // current user has already sent a user request
             holder.btnCancelRequest.setVisibility(View.VISIBLE);
             holder.btnSendRequest.setVisibility(View.GONE);
         }
         else{
+            // user has not sent the request
             holder.btnCancelRequest.setVisibility(View.GONE);
             holder.btnSendRequest.setVisibility(View.VISIBLE);
-
         }
 
         // adding click listeners

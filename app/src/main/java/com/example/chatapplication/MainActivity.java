@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.chatapplication.Chat.ChatFragment;
 import com.example.chatapplication.FindFriends.FindfriendFragment;
 import com.example.chatapplication.FriendRequest.RequestsFragment;
 import com.example.chatapplication.databinding.ActivityMainBinding;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     // TODO : Profile Picture not able take from External Storage (ProfileActivity , SignUpActivity)
     // TODO : ProgressBar Buggy in ProfileActivity SignUpActivity
+    // TODO : FindFriend recyclerview not updating after denying the request
 
     private ActivityMainBinding binding;
     private View progressBar;

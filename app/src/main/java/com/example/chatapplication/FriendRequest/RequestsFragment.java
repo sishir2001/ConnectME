@@ -80,10 +80,13 @@ public class RequestsFragment extends Fragment {
 
     private void fetchRequests(){
         progressBar.setVisibility(View.VISIBLE);
+        binding.textViewEmpty.setVisibility(View.GONE);
 
         friendReqDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Why should I clear the list here ?
+                friendRequestList.clear();
                 // we will get a snapshot
                 for(DataSnapshot ds:snapshot.getChildren()){
                     // ds : friend Request Sender
@@ -106,12 +109,16 @@ public class RequestsFragment extends Fragment {
                                     Toast.makeText(getContext(),"Got Details of a particular user"+snapshot1.child(NodeNames.NAME).getValue().toString(), Toast.LENGTH_SHORT).show();
                                     Log.i("RequestsFragment",snapshot1.child(NodeNames.NAME).getValue().toString());
                                     String usrName = snapshot1.child(NodeNames.NAME).getValue().toString();
-                                    String photoName = snapshot1.child(NodeNames.PHOTO).getValue().toString();
+                                    String photoName = "";
+                                    if(snapshot.child(NodeNames.PHOTO).getValue() != null){
+                                        photoName = snapshot1.child(NodeNames.PHOTO).getValue().toString();
+                                    }
                                     friendRequestList.add(new FriendRequestModel(usrName,photoName,otherUserId));
                                 }
                                 else{
                                     Toast.makeText(getContext(),"SnapShot Doest Exist"+snapshot1.child(NodeNames.NAME).getValue().toString(), Toast.LENGTH_SHORT).show();
                                 }
+                                // Updates the list after everychange
                                 requestAdapter.notifyDataSetChanged();
                             }
                             @Override
@@ -122,6 +129,7 @@ public class RequestsFragment extends Fragment {
                         });
                     }
                 }
+                requestAdapter.notifyDataSetChanged();
                 if(friendRequestList.isEmpty()){
                     Toast.makeText(getContext(),"Inside the if statement after loop", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
@@ -132,6 +140,7 @@ public class RequestsFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 progressBar.setVisibility(View.GONE);
+                friendRequestList.clear();
                 binding.textViewEmpty.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(),getContext().getString(R.string.failed_to_fetch_data,error.getMessage()), Toast.LENGTH_SHORT).show();
             }

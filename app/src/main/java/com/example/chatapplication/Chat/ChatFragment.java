@@ -1,4 +1,4 @@
-package com.example.chatapplication;
+package com.example.chatapplication.Chat;
 
 import android.os.Bundle;
 

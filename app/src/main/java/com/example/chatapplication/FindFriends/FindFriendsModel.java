@@ -6,12 +6,14 @@ public class FindFriendsModel {
     private String userPhoto; // uri of the user photo stored in
     private String userId;
     private boolean sendRequest;
+    private boolean acceptRequest;
 
-    public FindFriendsModel(String userName, String userPhoto, String userId, boolean sendRequest) {
+    public FindFriendsModel(String userName, String userPhoto, String userId, boolean sendRequest,boolean acceptRequest) {
         this.userName = userName;
         this.userPhoto = userPhoto;
         this.userId = userId;
         this.sendRequest = sendRequest;
+        this.acceptRequest = acceptRequest;
     }
 
     public String getUserName() {
@@ -45,4 +47,11 @@ public class FindFriendsModel {
     public void setSendRequest(boolean sendRequest) {
         this.sendRequest = sendRequest;
     }
+
+    public boolean isAcceptRequest() {
+        return acceptRequest;
+    }
+
+    public void setAcceptRequest(boolean acceptRequest) {
+        this.acceptRequest = acceptRequest;}
 }

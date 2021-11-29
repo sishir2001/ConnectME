@@ -8,14 +8,27 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatapplication.R;
+import com.example.chatapplication.common.Constants;
 import com.example.chatapplication.common.NodeNames;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -25,14 +38,21 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdapter.FriendRequestViewHolder> {
 
+    private Context context;
     private List<FriendRequestModel> requestList;
+    private FirebaseUser currentUser;
+    private DatabaseReference friendRequestDatabaseReference;
+    private DatabaseReference chatDatabaseReference;
 
     public FriendRequestAdapter(Context context,List<FriendRequestModel> requestList) {
         this.requestList = requestList;
         this.context = context;
+        this.currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.friendRequestDatabaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference().child(NodeNames.REQ_FRIENDS);
+        this.chatDatabaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference().child(NodeNames.CHAT);
+
     }
 
-    private Context context;
 
     @NonNull
     @Override
@@ -64,6 +84,77 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
         });
 
         // adding click listeners to buttons
+        holder.btnDeny.setOnClickListener(view -> btnDenyClicked(listElement,holder));
+        holder.btnAccept.setOnClickListener(view -> btnAcceptClicked(listElement,holder));
+
+    }
+    private void btnAcceptClicked(FriendRequestModel otherUserDetails,@NonNull FriendRequestViewHolder holder){
+        // first need to add both users to chat database with timestamp
+        holder.pbFriendRequest.setVisibility(View.VISIBLE);
+        chatDatabaseReference.child(currentUser.getUid()).child(otherUserDetails.getUserID()).child(NodeNames.TIMESTAMP).setValue(ServerValue.TIMESTAMP)
+                .addOnCompleteListener(task -> {
+                    holder.pbFriendRequest.setVisibility(View.GONE);
+                    if(task.isSuccessful()){
+                        chatDatabaseReference.child(otherUserDetails.getUserID()).child(currentUser.getUid())
+                                .child(NodeNames.TIMESTAMP)
+                                .setValue(ServerValue.TIMESTAMP)
+                                .addOnCompleteListener(task1 -> {
+                                    if(task1.isSuccessful()){
+                                        Toast.makeText(context, "Accepted Request Successfully", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else{
+                                        Toast.makeText(context, "Couldnt accept request", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                    else{
+                        Toast.makeText(context, "Couldnt accept request", Toast.LENGTH_SHORT).show();
+                    }
+                    this.notifyDataSetChanged();
+                });
+        // second need to set request type as accepted in both users
+        friendRequestDatabaseReference.child(currentUser.getUid()).child(otherUserDetails.getUserID()).child(NodeNames.REQ_TYPE).setValue(Constants.REQ_ACCEPTED)
+                .addOnCompleteListener(task -> {
+                    holder.pbFriendRequest.setVisibility(View.GONE);
+                    if(task.isSuccessful()){
+                        // then delete from the other user node
+                        friendRequestDatabaseReference.child(otherUserDetails.getUserID()).child(currentUser.getUid()).child(NodeNames.REQ_TYPE).setValue(Constants.REQ_ACCEPTED)
+                                .addOnCompleteListener(task1 -> {
+                                    if(task1.isSuccessful()){
+//                                        need to modify the users database to trigger an event change in find Friend adapter
+                                        Toast.makeText(context, "See Your Chat Tab !!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                    else{
+                        Toast.makeText(context, "Problem in Find Tab", Toast.LENGTH_SHORT).show();
+                    }
+                    this.notifyDataSetChanged();
+                });
+    }
+    private void btnDenyClicked(FriendRequestModel otherUserDetails,@NonNull FriendRequestViewHolder holder){
+        // need to update the friendReq node
+        holder.pbFriendRequest.setVisibility(View.VISIBLE);
+
+        // first deleting the data from the current user
+        friendRequestDatabaseReference.child(currentUser.getUid()).child(otherUserDetails.getUserID()).child(NodeNames.REQ_TYPE).setValue(null)
+                .addOnCompleteListener(task -> {
+                    holder.pbFriendRequest.setVisibility(View.GONE);
+                    if(task.isSuccessful()){
+                        // then delete from the other user node
+                        friendRequestDatabaseReference.child(otherUserDetails.getUserID()).child(currentUser.getUid()).child(NodeNames.REQ_TYPE).setValue(null)
+                                .addOnCompleteListener(task1 -> {
+                                    if(task1.isSuccessful()){
+//                                        need to modify the users database to trigger an event change in find Friend adapter
+                                        Toast.makeText(context, "Deleted Request Successfully", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                    else{
+                        Toast.makeText(context, "Couldn't delete the request", Toast.LENGTH_SHORT).show();
+                    }
+                    this.notifyDataSetChanged();
+                });
 
     }
 

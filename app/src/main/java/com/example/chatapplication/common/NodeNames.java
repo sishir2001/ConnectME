@@ -9,4 +9,6 @@ public class NodeNames {
     public static final String IMAGES = "images";
     public static final String REQ_FRIENDS = "friend_requests";
     public static final String REQ_TYPE = "reques_type";
+    public static final String CHAT = "chat";
+    public static final String TIMESTAMP = "timestamp";
 }
