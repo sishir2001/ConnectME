@@ -85,7 +85,7 @@ public class RequestsFragment extends Fragment {
         friendReqDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // Why should I clear the list here ?
+                // databaseReference is to the users , so who so evers users details is changed , this will be called and sent us the whole data
                 friendRequestList.clear();
                 // we will get a snapshot
                 for(DataSnapshot ds:snapshot.getChildren()){

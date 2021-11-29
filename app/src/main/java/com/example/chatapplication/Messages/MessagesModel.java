@@ -4,18 +4,18 @@ public class MessagesModel {
     private String message;
     private String message_from;
     private String message_id;
-    private String timestamp;
+    private Long timestamp;
     private String type;
 
-    public MessagesModel() {
-    }
-
-    public MessagesModel(String message, String message_from, String message_id, String timestamp, String type) {
+    public MessagesModel(String message, String message_from, String message_id, Long timestamp, String type) {
         this.message = message;
         this.message_from = message_from;
         this.message_id = message_id;
         this.timestamp = timestamp;
         this.type = type;
+    }
+
+    public MessagesModel() {
     }
 
     public String getMessage() {
@@ -42,11 +42,11 @@ public class MessagesModel {
         this.message_id = message_id;
     }
 
-    public String getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -57,5 +57,4 @@ public class MessagesModel {
     public void setType(String type) {
         this.type = type;
     }
-
 }
