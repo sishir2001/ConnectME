@@ -29,6 +29,8 @@ import com.example.ConnectMe.common.NodeNames;
 import com.example.ConnectMe.R;
 import com.example.ConnectMe.common.Util;
 import com.example.ConnectMe.databinding.ActivityChatBinding;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,7 +41,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -270,20 +276,76 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 // sending this picture to Firebase Storage using a particular message id , type : Image,Message = ? ,
                 // Name of image in Starage = pushId + jpg
                 // convert the Bitmap in array bytes to upload to storage ref
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,bytes); // conversion of bitmap into ByteArrayOutputStream
+                uploadByteArray(bytes,Constants.MSG_TYPE_IMG);
             }
             else if(requestCode == REQ_GAL){
                 // get uri from local files
                 Uri uriImg = data.getData();
                 // use putFile method of Firebase using the localFile uri
+                uploadFile(uriImg,Constants.MSG_TYPE_IMG);
+
             }
             else if(requestCode == REQ_VID){
                // similar to images
                Uri uriVid = data.getData();
+               uploadFile(uriVid,Constants.MSG_TYPE_VID);
             }
         }
         else{
             Toast.makeText(ChatActivity.this, "Did not access any data", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void uploadByteArray(ByteArrayOutputStream bytes,String msgType){
+        // keeping videos and photos in seperate folder
+        StorageReference rootStorageReference = FirebaseStorage.getInstance().getReference();// to the root of the cloud
+        String pushId = messagesDatabaseReferences.getKey();// gives a unique id
+        String folderName = (msgType.equals(Constants.MSG_TYPE_IMG)) ? Constants.MESSAGE_IMAGES : Constants.MESSAGE_VIDEOS;
+        String fileName = (msgType.equals(Constants.MSG_TYPE_IMG)) ? pushId + ".jpg" : pushId + ".mp4";
+
+        StorageReference fileRef = rootStorageReference.child(folderName).child(fileName);
+        fileRef.putBytes(bytes.toByteArray()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(ChatActivity.this, "File Successfully Uploaded to the cloud", Toast.LENGTH_SHORT).show();
+                // Once the file is uploaded successfully , send this file as message to that particular user
+                // Upload message to Messages Realtime database using the same push id .
+                // Change the reading in adapter according to msgType
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ChatActivity.this, "File upload unsuccessful to the cloud", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void uploadFile(Uri uri,String msgType){
+       // keeping videos and photos in seperate folder
+        StorageReference rootStorageReference = FirebaseStorage.getInstance().getReference();// to the root of the cloud
+        String pushId = messagesDatabaseReferences.getKey();// gives a unique id
+        String folderName = (msgType.equals(Constants.MSG_TYPE_IMG)) ? Constants.MESSAGE_IMAGES : Constants.MESSAGE_VIDEOS;
+        String fileName = (msgType.equals(Constants.MSG_TYPE_IMG)) ? pushId + ".jpg" : pushId + ".mp4";
+
+        StorageReference fileRef = rootStorageReference.child(folderName).child(fileName);
+        fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(ChatActivity.this, "File Successfully Uploaded to the cloud", Toast.LENGTH_SHORT).show();
+                // Once the file is uploaded successfully , send this file as message to that particular user
+                // Upload message to Messages Realtime database using the same push id .
+                // Change the reading in adapter according to msgType
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ChatActivity.this, "File upload unsuccessful to the cloud", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     // for all then permissions
