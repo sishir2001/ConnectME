@@ -5,6 +5,8 @@
     android:id="@+id/llProgressLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:elevation="4dp"
     android:orientation="vertical"
     android:padding="2dp">
 
@@ -27,7 +29,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:max="100"
-            android:padding="4dp" />
+            android:padding="4dp"
+            android:progressBackgroundTint="@color/primaryLightColor"
+            android:progressTint="@color/primaryDarkColor" />
 
         <ImageView
             android:id="@+id/ivPause"

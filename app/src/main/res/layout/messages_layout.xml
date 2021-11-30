@@ -7,6 +7,69 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/llRecieveImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/message_recieved_bg"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llsendImage"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/tvRecieveImageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_weight="1"
+            android:padding="2dp"
+            android:textSize="10sp"
+            tools:text="09:00" />
+
+        <ImageView
+            android:id="@+id/ivRecieveImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_message_image" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llsendImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/message_sent_bg"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llReceiveMessage"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/ivSendImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_message_image" />
+
+        <TextView
+            android:id="@+id/tvSendImageTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:padding="2dp"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            tools:text="09:00" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/llsendMessage"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -36,8 +99,9 @@
             android:id="@+id/tvMessageTimeSent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="bottom|end"
             android:layout_weight="1"
+            android:padding="2dp"
             android:textColor="@color/white"
             android:textSize="10sp"
             tools:text="09:00" />
@@ -49,13 +113,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:background="@drawable/message_recieved_bg"
         android:elevation="5dp"
         android:orientation="horizontal"
         android:padding="3dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/llsendMessage"
         tools:visibility="visible">
@@ -64,8 +126,9 @@
             android:id="@+id/tvMessageTimeReceived"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="bottom|end"
             android:layout_weight="1"
+            android:padding="2dp"
             android:textSize="10sp"
             tools:text="09:00" />
 

@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     // TODO : ResetPassword Activity : Add toast and redirect to LoginActivity
     // TODO : File Uploading
     // TODO : provide an option for Dark Theme
+    // TODO : adding imageView to AppBar
+    // TODO : Improve UI of the app
 
     private ActivityMainBinding binding;
     private View progressBar;
