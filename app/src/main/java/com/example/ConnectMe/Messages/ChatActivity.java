@@ -32,6 +32,7 @@ import com.example.ConnectMe.common.NodeNames;
 import com.example.ConnectMe.R;
 import com.example.ConnectMe.common.Util;
 import com.example.ConnectMe.databinding.ActivityChatBinding;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -427,6 +428,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             public void onFailure(@NonNull Exception e) {
                 binding.llProgress.removeView(view);
                 Toast.makeText(ChatActivity.this,getString(R.string.failed_to_upload,e.getMessage()), Toast.LENGTH_SHORT).show();// Debug
+            }
+        });
+        task.addOnCanceledListener(new OnCanceledListener() {
+            @Override
+            public void onCanceled() {
+                Toast.makeText(ChatActivity.this,"Cancelled Uploading the file", Toast.LENGTH_SHORT).show();// Debug
             }
         });
     }
