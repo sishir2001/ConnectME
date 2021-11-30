@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Chat.ChatFragment">
+    tools:context="com.example.ConnectMe.Chat.ChatFragment">
 
     <include
         android:id="@+id/customProgressBar"

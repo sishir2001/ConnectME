@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/chat_bg"
-    tools:context=".Messages.ChatActivity">
+    tools:context="com.example.ConnectMe.Messages.ChatActivity">
 
     <LinearLayout
         android:id="@+id/llChatSend"
