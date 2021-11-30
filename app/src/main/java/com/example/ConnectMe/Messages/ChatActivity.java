@@ -21,6 +21,9 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ConnectMe.common.Constants;
@@ -29,8 +32,10 @@ import com.example.ConnectMe.common.NodeNames;
 import com.example.ConnectMe.R;
 import com.example.ConnectMe.common.Util;
 import com.example.ConnectMe.databinding.ActivityChatBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,6 +47,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -299,6 +305,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void uploadByteArray(ByteArrayOutputStream bytes,String msgType){
+        // Start The progress bar
         // keeping videos and photos in seperate folder
         StorageReference rootStorageReference = FirebaseStorage.getInstance().getReference();// to the root of the cloud
         String pushId = messagesDatabaseReferences.getKey();// gives a unique id
@@ -306,21 +313,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         String fileName = (msgType.equals(Constants.MSG_TYPE_IMG)) ? pushId + ".jpg" : pushId + ".mp4";
 
         StorageReference fileRef = rootStorageReference.child(folderName).child(fileName);
-        fileRef.putBytes(bytes.toByteArray()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(ChatActivity.this, "File Successfully Uploaded to the cloud", Toast.LENGTH_SHORT).show();
-                // Once the file is uploaded successfully , send this file as message to that particular user
-                // Upload message to Messages Realtime database using the same push id .
-                // Change the reading in adapter according to msgType
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ChatActivity.this, "File upload unsuccessful to the cloud", Toast.LENGTH_SHORT).show();
-            }
-        });
+        UploadTask task = fileRef.putBytes(bytes.toByteArray());
+        // next monitor the progress of the file uploading
+        uploadProgress(task,pushId,fileRef,msgType);
     }
 
     private void uploadFile(Uri uri,String msgType){
@@ -331,21 +326,109 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         String fileName = (msgType.equals(Constants.MSG_TYPE_IMG)) ? pushId + ".jpg" : pushId + ".mp4";
 
         StorageReference fileRef = rootStorageReference.child(folderName).child(fileName);
-        fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        UploadTask task =  fileRef.putFile(uri);
+        // next monitor the progress of the file uploading
+        uploadProgress(task,pushId,fileRef,msgType);
+    }
+    private void uploadProgress(UploadTask task,String pushId,StorageReference fileRef,String messageType){
+        /*
+            * @param task - To know the progress of the upload
+            * @param pushId - useful for sending message to the user
+            * fileRef - to get a downloadable uri to set in message key of message hashmap
+            * messageType - to identify the type of message while displaying the chats
+        */
+        // Creating a view out of upload xml
+        View view = LayoutInflater.from(ChatActivity.this).inflate(R.layout.progress_file_layout,null);
+        // get views
+        ProgressBar pbProfress = view.findViewById(R.id.pbProgress);
+        TextView tvFileProgress = view.findViewById(R.id.tvFileProgress);
+        ImageView ivPlay = view.findViewById(R.id.ivPlay);
+        ImageView ivPause = view.findViewById(R.id.ivPause);
+        ImageView ivCancel = view.findViewById(R.id.ivCancel);
+
+        ivPause.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(ChatActivity.this, "File Successfully Uploaded to the cloud", Toast.LENGTH_SHORT).show();
-                // Once the file is uploaded successfully , send this file as message to that particular user
-                // Upload message to Messages Realtime database using the same push id .
-                // Change the reading in adapter according to msgType
+            public void onClick(View view) {
+                ivPause.setVisibility(View.GONE);
+                ivPlay.setVisibility(View.VISIBLE);
+                task.pause();
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        });
+        ivPlay.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ChatActivity.this, "File upload unsuccessful to the cloud", Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                ivPlay.setVisibility(View.GONE);
+                ivPause.setVisibility(View.VISIBLE);
+                task.resume();
+            }
+        });
+        ivCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                ivPlay.setVisibility(View.GONE);
+//                ivPause.setVisibility(View.VISIBLE);
+                // Confirmation with alertBox
+                new MaterialAlertDialogBuilder(ChatActivity.this)
+                        .setTitle(getString(R.string.cancel_uploading_file))
+                        .setMessage(getString(R.string.are_you_sure_cancel_file_upload))
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                               task.cancel();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // dont want to cancel the file upload
+                                dialogInterface.cancel();
+                            }
+                        }).create().show();
             }
         });
 
+        // Setting the progress Bar
+
+
+
+        // Adding this View to the progress Linear layout
+        binding.llProgress.addView(view);
+        tvFileProgress.setText(getString(R.string.uploading_progress,messageType,"0"));
+
+
+        // adding callbacks to tasks
+        task.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                double progress = (100.0 * snapshot.getBytesTransferred())/ snapshot.getTotalByteCount();
+                pbProfress.setProgress((int)progress);
+                tvFileProgress.setText(getString(R.string.uploading_progress,messageType,String.valueOf(pbProfress.getProgress())));
+            }
+        });
+        task.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                //close the progress layout
+                binding.llProgress.removeView(view);
+                if(task.isSuccessful()){
+                    // upload to the message
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String downloadUri = uri.toString();
+                            SendMessage(downloadUri,messageType,pushId);
+                        }
+                    });
+                }
+            }
+        });
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                binding.llProgress.removeView(view);
+                Toast.makeText(ChatActivity.this,getString(R.string.failed_to_upload,e.getMessage()), Toast.LENGTH_SHORT).show();// Debug
+            }
+        });
     }
 
     // for all then permissions

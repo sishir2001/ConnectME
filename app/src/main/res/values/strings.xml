@@ -80,4 +80,9 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="video">Video</string>
+    <string name="cancel_uploading_file">Cancel uploading file</string>
+    <string name="are_you_sure_cancel_file_upload">Are you to cancel uploading the file</string>
+    <string name="yes">YES</string>
+    <string name="uploading_progress">Uploading %1$s (%2$s %%)</string>
+    <string name="failed_to_upload">Failed to Upload : %1$s</string>
 </resources>
