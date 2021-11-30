@@ -4,13 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +34,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private List<MessagesModel> messageList;
     private Context context;
     private FirebaseUser currentUser;
+    private ActionMode actionMode;
 
     public MessageAdapter( Context context,List<MessagesModel> messageList) {
         this.messageList = messageList;
@@ -145,8 +152,79 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 }
             }
         });
+        // setting up the long ClickListeneres
 
+        holder.clMessageLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(actionMode != null)
+                    return false;
+                actionMode = ((AppCompatActivity)context).startSupportActionMode(actionModeCallback);
+                // changing the background color of the app
+                view.setBackgroundColor(context.getColor(R.color.primaryLightColor));
+//                view.setSelected(true);
+//                view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                    @Override
+//                    public void onFocusChange(View view, boolean b) {
+//                        if(b){
+//                            Toast.makeText(context, "Has Focus", Toast.LENGTH_SHORT).show();
+//                            view.setSelected(true);
+//                        }
+//                        else{
+//                            Toast.makeText(context, "No Focus", Toast.LENGTH_SHORT).show();
+//                            view.setSelected(false);
+//                        }
+//                    }
+//                });
+                return true;
+            }
+        });
     }
+    private androidx.appcompat.view.ActionMode.Callback actionModeCallback = new androidx.appcompat.view.ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(androidx.appcompat.view.ActionMode mode, Menu menu) {
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.menu_chat_options,menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(androidx.appcompat.view.ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(androidx.appcompat.view.ActionMode mode, MenuItem item) {
+            switch(item.getItemId()){
+                case R.id.mnuForward:
+                    Toast.makeText(context, "Forward Clicked", Toast.LENGTH_SHORT).show();
+                    mode.finish();
+                    return true;
+
+                case R.id.mnuDelete:
+                    Toast.makeText(context, "Delete Clicked", Toast.LENGTH_SHORT).show();
+                    mode.finish();
+                    return true;
+                case R.id.mnuShare:
+                    Toast.makeText(context, "Share Clicked", Toast.LENGTH_SHORT).show();
+                    mode.finish();
+                    return true;
+                case R.id.mnuDownload:
+                    Toast.makeText(context, "Download Clicked", Toast.LENGTH_SHORT).show();
+                    mode.finish();
+                    return true;
+                default:
+                    break;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(androidx.appcompat.view.ActionMode mode) {
+
+            actionMode = null;
+        }
+    };
 
     @Override
     public int getItemCount() {

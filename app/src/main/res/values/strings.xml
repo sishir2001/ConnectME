@@ -85,4 +85,8 @@
     <string name="yes">YES</string>
     <string name="uploading_progress">Uploading %1$s (%2$s %%)</string>
     <string name="failed_to_upload">Failed to Upload : %1$s</string>
+    <string name="forward">forward</string>
+    <string name="delete">delete</string>
+    <string name="share">share</string>
+    <string name="download">download</string>
 </resources>
