@@ -192,7 +192,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.ivAttachment:
                 // check for permissions from  the OS
                 // For camera capture, Gallery,Video -> External File storage is required
-                if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                if(ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
                     // need to show the bottom navigation
                     if(bottomSheetDialog!=null){
                         bottomSheetDialog.show();
@@ -200,7 +200,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 else{
                    // Check to whether we need to rationale
-                   if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)){
+                   if(ActivityCompat.shouldShowRequestPermissionRationale(ChatActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
                        // Should show request Rationale
                        // show a AlertDialogue box
                        Toast.makeText(ChatActivity.this, "Should Show Rationale", Toast.LENGTH_SHORT).show();

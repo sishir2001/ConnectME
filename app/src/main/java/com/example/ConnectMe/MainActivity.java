@@ -26,7 +26,8 @@ import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-    // TODO : Profile Picture not able take from External Storage (ProfileActivity , SignUpActivity)
+//     TODO : Profile Picture not able take from External Storage (ProfileActivity , SignUpActivity) -> DONE
+    // TODO : Photo Url:Might be wrong for other users
     // TODO : ProgressBar Buggy in ProfileActivity SignUpActivity
     // TODO : ChatActivity : Recent At top , Stack
     // TODO : MessageActivity : Custom ActionBar with ChatUser Name,ProfilePic

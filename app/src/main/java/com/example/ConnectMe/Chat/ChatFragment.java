@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,6 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
             }
 
             @Override
@@ -119,15 +119,18 @@ public class ChatFragment extends Fragment {
     private void updateList(@NotNull DataSnapshot snapshot,Boolean isNew,String userId){
             // need to add data to chatList
         progressBar.setVisibility(View.VISIBLE);
-        String lastMessage = "",lastMessageTime= "",unseenCount = "";
+        String lastMessage = "",lastMessageTime= "",unseenCount = "";// refer from messages Node
         databaseReference.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // fetch the data here
                 progressBar.setVisibility(View.GONE);
+                binding.textViewEmpty.setVisibility(View.GONE); // check
                 if(snapshot.exists()){
                     String userName = snapshot.child(NodeNames.NAME).getValue().toString() == null ?"":snapshot.child(NodeNames.NAME).getValue().toString();
                     String userPhoto = snapshot.child(NodeNames.PHOTO).getValue().toString() == null ?"":snapshot.child(NodeNames.PHOTO).getValue().toString();
+                    Toast.makeText(getActivity(),userName + " : " + userPhoto,Toast.LENGTH_SHORT).show();
+                    Log.i("ChatFragment",userName + " : " + userPhoto);
 
                     chatList.add(new ChatListModel(userId,userName,userPhoto,lastMessage,lastMessageTime,unseenCount));
                     chatListAdapter.notifyDataSetChanged();

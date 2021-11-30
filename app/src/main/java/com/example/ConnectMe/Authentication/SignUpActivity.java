@@ -176,6 +176,7 @@ public class SignUpActivity extends AppCompatActivity {
                 // we need to update the location of the file in the server for Users realtime database
                 fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     serverFileUri = uri;
+                    Log.i("SignUpActivity","serverFileUri : "+serverFileUri);
                     // now we need to update the User profile in realtime database with the link of Profile Picture stored in Firebase Storage
                     UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                             .setDisplayName(binding.etName.getText().toString().trim())
@@ -193,7 +194,8 @@ public class SignUpActivity extends AppCompatActivity {
                             hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
                             hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
                             hashMap.put(NodeNames.ONLINE,getResources().getString(R.string.online));
-                            hashMap.put(NodeNames.PHOTO,serverFileUri.getPath());
+//                            hashMap.put(NodeNames.PHOTO,serverFileUri.getPath());
+                            hashMap.put(NodeNames.PHOTO,serverFileUri.toString());
 
 //                           progressBar.setVisibility(View.VISIBLE);
                             // pushing the data to the child node
