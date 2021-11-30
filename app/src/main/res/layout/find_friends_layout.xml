@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="8dp">
+    android:layout_height="wrap_content">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/civDefualtProfile"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -22,7 +21,7 @@
         android:id="@+id/tvFullName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="3dp"
         android:text="TextView"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -35,11 +34,11 @@
         android:id="@+id/btnSendFriendRequest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/send_friend_request"
         android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/civDefualtProfile"
+        app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintStart_toEndOf="@+id/civDefualtProfile"
         app:layout_constraintTop_toBottomOf="@+id/tvFullName" />
 
@@ -47,12 +46,13 @@
         android:id="@+id/btnCancelRequest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@android:color/holo_red_dark"
         android:text="@string/cancel_friend_request"
         android:textSize="10sp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/civDefualtProfile"
+        app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintStart_toEndOf="@+id/civDefualtProfile"
         app:layout_constraintTop_toBottomOf="@+id/tvFullName"
         tools:visibility="visible" />
@@ -62,18 +62,19 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
     <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:layout_margin="1dp"
-        android:background="@color/grey"
+        android:background="@color/primaryLightColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

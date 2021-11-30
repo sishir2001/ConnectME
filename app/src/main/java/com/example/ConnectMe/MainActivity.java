@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     // TODO : Unseen Count , Last Message
     // TODO : ResetPassword Activity : Add toast and redirect to LoginActivity
     // TODO : File Uploading
+    // TODO : provide an option for Dark Theme
 
     private ActivityMainBinding binding;
     private View progressBar;

@@ -90,8 +90,8 @@ public class SignUpActivity extends AppCompatActivity {
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
                                 Toast.makeText(SignUpActivity.this,getString(R.string.permission_not_granted_file), Toast.LENGTH_SHORT).show();
+                                dialogInterface.cancel();
                             }
                         });
                 builder.create().show();
@@ -134,7 +134,7 @@ public class SignUpActivity extends AppCompatActivity {
             Log.i("SignUpActivity",""+grantResults[0]+" , "+PackageManager.PERMISSION_DENIED);
             Log.i("SignUpActivity",""+grantResults[0]+" , "+PackageManager.GET_PERMISSIONS);
 
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 // we can access the external storge
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent,101); // The request code can be any numeber, its just for reference
