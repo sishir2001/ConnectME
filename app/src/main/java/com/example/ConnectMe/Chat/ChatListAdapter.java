@@ -85,6 +85,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
                // navigate to main activity with the friends user id
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra(Extras.USER_KEY,listElement.getUserId());
+                intent.putExtra(Extras.USER_NAME,listElement.getUserName());
+                intent.putExtra(Extras.USER_PHOTO_NAME,listElement.getUserPhoto());
                 context.startActivity(intent);
             }
         });

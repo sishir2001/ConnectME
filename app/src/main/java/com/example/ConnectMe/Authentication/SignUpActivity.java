@@ -2,6 +2,7 @@ package com.example.ConnectMe.Authentication;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -50,9 +52,17 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
         super.onCreate(savedInstanceState);
 //        progressBar = findViewById(R.id.progressBar);
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
+        // Action Bar setup
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
         // Initializing filestorage
         fileStorage = FirebaseStorage.getInstance().getReference();// will give reference to the root folder
         // View Binding
@@ -63,6 +73,19 @@ public class SignUpActivity extends AppCompatActivity {
         binding.ImageViewdefaultProfile.setOnClickListener(view1 -> pickImage());
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void pickImage(){
         // when the user clicks on the default profile pic to choose a pic from gallery
         // Permission needs to be taken in the manifest file

@@ -4,6 +4,7 @@ import static android.provider.MediaStore.ACTION_IMAGE_CAPTURE;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,13 +20,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.ConnectMe.common.Constants;
 import com.example.ConnectMe.common.Extras;
 import com.example.ConnectMe.common.NodeNames;
@@ -57,6 +61,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
     // this is the activity where the conversational screen appears
@@ -75,6 +81,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private DatabaseReference messagesDatabaseReferences;
 
 
+    // for actionBar
+    private TextView tvActionBarUserName;
+    private CircleImageView civProfileImage;
+
     // For attachments
     private BottomSheetDialog bottomSheetDialog;
     private final static int REQ_IMG_CAPTURE = 101;
@@ -87,11 +97,43 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // ActionBar code
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setTitle(getString(R.string.empty_string));
+            ViewGroup actionBarLayout = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_actionbar_layout,null);
+            // for up button in this activity
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setElevation(1);
+
+            // setting up the custom action bar
+            actionBar.setCustomView(actionBarLayout);
+            actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+
+        }
+
+        // how im able to know the id's -> because im in an activity
+        civProfileImage = findViewById(R.id.ivProfilePicture);
+        tvActionBarUserName= findViewById(R.id.tvUserName);
+
         // Checking for extras in intent
         if(getIntent().hasExtra(Extras.USER_KEY)){
             chatUserId = getIntent().getStringExtra(Extras.USER_KEY);
         }
 
+        if(getIntent().hasExtra(Extras.USER_NAME)){
+            tvActionBarUserName.setText(getIntent().getStringExtra(Extras.USER_NAME));
+        }
+
+        if(getIntent().hasExtra(Extras.USER_PHOTO_NAME)){
+            Uri imgUri = Uri.parse(getIntent().getStringExtra(Extras.USER_PHOTO_NAME));
+            Glide.with(ChatActivity.this)
+                    .load(imgUri)
+                    .placeholder(R.drawable.default_profile)
+                    .error(R.drawable.default_profile1)
+                    .into(civProfileImage);
+        }
         rootDatabaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference();
         firebaseAuth = FirebaseAuth.getInstance();
         currentUserId = firebaseAuth.getCurrentUser().getUid();
@@ -132,6 +174,20 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         view.findViewById(R.id.ivClose).setOnClickListener(this);
         bottomSheetDialog.setContentView(view); // attaching a view to bottomSheetDialog
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId){
+            // Handling the Up button
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadMessages(){
