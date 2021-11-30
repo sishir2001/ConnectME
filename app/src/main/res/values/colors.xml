@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#717070</color>
     <color name="accept">#13A193</color>
+    <color name="chat_bg">#E3E0E0</color>
 
 <!--    App Color Pallete-->
     <color name="primaryColor">#42a5f5</color>

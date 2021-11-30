@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.chatapplication">
+    package="com.example.ConnectMe">
 
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,14 +15,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApplication">
         <activity
-            android:name=".MessageActivity"
+            android:name="com.example.ConnectMe.Messages.ChatActivity"
             android:exported="false" />
         <activity
-            android:name=".slideInfo.slideinfoActivity"
+            android:name="com.example.ConnectMe.MessageActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.ConnectMe.slideInfo.slideinfoActivity"
             android:exported="false"
             android:theme="@style/Theme.ChatApplication.NoActionBar" />
         <activity
-            android:name=".splash.SplashActivity"
+            android:name="com.example.ConnectMe.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.ChatApplication.NoActionBar">
             <intent-filter>
@@ -32,22 +35,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".passwords.ResetPasswordActivity"
+            android:name="com.example.ConnectMe.passwords.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".passwords.ChangePasswordActivity"
+            android:name="com.example.ConnectMe.passwords.ChangePasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.ConnectMe.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".profile.ProfileActivity"
+            android:name="com.example.ConnectMe.profile.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".Authentication.SignUpActivity"
+            android:name="com.example.ConnectMe.Authentication.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".Authentication.LoginActivity"
+            android:name="com.example.ConnectMe.Authentication.LoginActivity"
             android:exported="true" />
     </application>
 
