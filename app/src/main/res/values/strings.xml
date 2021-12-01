@@ -89,4 +89,7 @@
     <string name="delete">delete</string>
     <string name="share">share</string>
     <string name="download">download</string>
+    <string name="message_deletion_error">Deletion error:%1$s</string>
+    <string name="message_deleted_successfully">Message Deleted Successfully</string>
+    <string name="error_deletion_cloud">Error in deletion of file in cloud %1$s</string>
 </resources>

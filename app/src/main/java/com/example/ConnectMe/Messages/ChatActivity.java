@@ -218,12 +218,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 // when the message is deleted
+                loadMessages();// calling the same function again to clearing the list and fetching the list altogether
 
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                // moved to somewhere else
 
             }
 
@@ -555,6 +555,55 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
         catch (Exception e){
             Toast.makeText(ChatActivity.this,getString(R.string.msg_send_error,e.getMessage()), Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void deleteMessage(String messageId,String messageType){
+        // we are declaring this function in ChatActivity instead of MessengerAdapter because -> currentUserId,ChatUserId
+        if(currentUserId != null && chatUserId != null){
+            DatabaseReference currentUserDatabaseRef = rootDatabaseReference.child(NodeNames.MESSAGES).child(currentUserId).child(chatUserId).child(messageId);
+            DatabaseReference chatUserDatabaseRef = rootDatabaseReference.child(NodeNames.MESSAGES).child(chatUserId).child(currentUserId).child(messageId);
+
+            currentUserDatabaseRef.removeValue()
+                    .addOnCompleteListener(task -> {
+                       if(task.isSuccessful()){
+                           // delete the same message in chatUser
+                           chatUserDatabaseRef.removeValue()
+                                   .addOnCompleteListener(task1 -> {
+                                      if(task1.isSuccessful()){
+                                          if(!messageType.equals(Constants.MSG_TYPE_TEXT)){
+                                              // img or vid
+                                              StorageReference rootStorageRef = FirebaseStorage.getInstance().getReference();
+                                              String folderName = (messageType.equals(Constants.MSG_TYPE_IMG))?Constants.MESSAGE_IMAGES:Constants.MESSAGE_VIDEOS;
+                                              String fileName = (messageType.equals(Constants.MSG_TYPE_IMG))?messageId+".jpg":messageId+".mp4";
+                                              StorageReference fileRef = rootStorageRef.child(folderName).child(fileName);
+                                              fileRef.delete().addOnCompleteListener(task2 -> {
+                                                  if(task2.isSuccessful()){
+                                                      Toast.makeText(ChatActivity.this,getString(R.string.message_deleted_successfully), Toast.LENGTH_SHORT).show();
+                                                  }
+                                                  else{
+                                                      Toast.makeText(ChatActivity.this,getString(R.string.error_deletion_cloud,task2.getException()), Toast.LENGTH_SHORT).show();
+                                                  }
+                                              });
+                                          }
+                                          else{
+                                              // text
+                                              Toast.makeText(ChatActivity.this,getString(R.string.message_deleted_successfully), Toast.LENGTH_SHORT).show();
+                                          }
+                                      }
+                                      else{
+                                          Toast.makeText(ChatActivity.this,getString(R.string.message_deletion_error,task1.getException()), Toast.LENGTH_SHORT).show();
+                                      }
+                                   });
+
+                       }
+                       else{
+                           Toast.makeText(ChatActivity.this,getString(R.string.message_deletion_error,task.getException()), Toast.LENGTH_SHORT).show();
+                       }
+                    });
+        }
+        else{
+            Toast.makeText(ChatActivity.this, "currentUserId,chatUserId not available,ChatActivity->deleteMessages", Toast.LENGTH_SHORT).show();
+
         }
     }
 }

@@ -35,6 +35,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private Context context;
     private FirebaseUser currentUser;
     private ActionMode actionMode;
+    private ConstraintLayout selectedView;
 
     public MessageAdapter( Context context,List<MessagesModel> messageList) {
         this.messageList = messageList;
@@ -157,6 +158,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         holder.clMessageLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                selectedView = holder.clMessageLayout;
                 if(actionMode != null)
                     return false;
                 actionMode = ((AppCompatActivity)context).startSupportActionMode(actionModeCallback);
@@ -195,6 +197,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         @Override
         public boolean onActionItemClicked(androidx.appcompat.view.ActionMode mode, MenuItem item) {
+            String messageId = selectedView.getTag(R.id.TAG_MESSAGE_ID).toString();
+            String messageType = selectedView.getTag(R.id.TAG_MESSAGE_TYPE).toString();
+            String message = selectedView.getTag(R.id.TAG_MESSAGE).toString();
+
             switch(item.getItemId()){
                 case R.id.mnuForward:
                     Toast.makeText(context, "Forward Clicked", Toast.LENGTH_SHORT).show();
@@ -202,7 +208,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     return true;
 
                 case R.id.mnuDelete:
-                    Toast.makeText(context, "Delete Clicked", Toast.LENGTH_SHORT).show();
+                    if(context instanceof ChatActivity){
+                        ((ChatActivity)context).deleteMessage(messageId,messageType);
+                    }
                     mode.finish();
                     return true;
                 case R.id.mnuShare:
@@ -223,6 +231,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         public void onDestroyActionMode(androidx.appcompat.view.ActionMode mode) {
 
             actionMode = null;
+            selectedView.setBackgroundColor(context.getColor(R.color.chat_bg));
         }
     };
 
