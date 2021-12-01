@@ -31,8 +31,10 @@ import com.example.ConnectMe.R;
 import com.example.ConnectMe.common.NodeNames;
 import com.example.ConnectMe.common.Util;
 import com.example.ConnectMe.databinding.ActivityProfileBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -109,9 +111,24 @@ public class ProfileActivity extends AppCompatActivity {
 
         // setting click listener to logout button
         binding.buttonLogout.setOnClickListener(view1 -> {
-            firebaseAuth.signOut();
-            startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
-            finish(); // even though user clicks the back button, he cannot navigate to this activity
+            FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+            DatabaseReference tokenDatabaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference()
+                    .child(NodeNames.TOKENS).child(NodeNames.DEVICE_TOKEN).child(currentUser.getUid());
+            tokenDatabaseReference.setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Toast.makeText(ProfileActivity.this,"Token revoked",Toast.LENGTH_SHORT);
+                        firebaseAuth.signOut();
+                        startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+                        finish(); // even though user clicks the back button, he cannot navigate to this activity
+
+                    }
+                    else{
+                        Toast.makeText(ProfileActivity.this,"Something went wrong"+task.getException(),Toast.LENGTH_SHORT);
+                    }
+                }
+            });
         });
 
         // setting click listerner to change password text view
