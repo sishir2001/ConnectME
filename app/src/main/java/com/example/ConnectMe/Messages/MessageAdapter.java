@@ -187,6 +187,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         public boolean onCreateActionMode(androidx.appcompat.view.ActionMode mode, Menu menu) {
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.menu_chat_options,menu);
+
+            // Not showing the download option for text messages
+            String messageType = selectedView.getTag(R.id.TAG_MESSAGE_TYPE).toString();
+            if(messageType.equals(Constants.MSG_TYPE_TEXT)){
+                MenuItem deleteMenuItem = menu.findItem(R.id.mnuDelete);
+                deleteMenuItem.setVisible(false);
+            }
             return true;
         }
 
