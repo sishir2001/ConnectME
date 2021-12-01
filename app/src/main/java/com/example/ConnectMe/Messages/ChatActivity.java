@@ -153,6 +153,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         messagesDatabaseReferences = rootDatabaseReference.child(NodeNames.MESSAGES).child(currentUserId).child(chatUserId);// Directly to the messages
 
         loadMessages();
+        // setting the unseen count to 0
+        rootDatabaseReference.child(NodeNames.CHAT).child(currentUserId).child(chatUserId).child(NodeNames.UNSEEN_COUNT).setValue(0);
+
         binding.rvMessages.scrollToPosition(messagesModelList.size()-1);
 
         binding.srlMessages.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -745,6 +748,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                            }
                            String notificationMessage = msg;
                            Util.sendNotification(ChatActivity.this,notificationTitle,notificationMessage,chatUserId);
+                           Util.updateChatDetails(ChatActivity.this,currentUserId,chatUserId);// updating the other side chat
                        }
                     }
                 });
@@ -802,5 +806,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(ChatActivity.this, "currentUserId,chatUserId not available,ChatActivity->deleteMessages", Toast.LENGTH_SHORT).show();
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        rootDatabaseReference.child(NodeNames.CHAT).child(currentUserId).child(chatUserId).child(NodeNames.UNSEEN_COUNT).setValue(0);
+        super.onBackPressed();
     }
 }

@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
@@ -22,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
@@ -148,5 +150,43 @@ public class Util {
                         Toast.makeText(context,context.getString(R.string.failed_send_notification,error.getMessage()),Toast.LENGTH_SHORT).show();
                     }
                 });
+
+    }
+    public static void updateChatDetails(Context context,String currentUserId,String chatUserId){
+
+        // for unseen count , just update the NodeName.Chat with NodeName UnseenCount
+        DatabaseReference rootDatabaseRef = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference();
+        DatabaseReference chatDatabaseRef = rootDatabaseRef.child(NodeNames.CHAT).child(chatUserId).child(currentUserId);
+
+        // first read the current count and increment it
+        chatDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String currentCount = "0";
+                if(snapshot.child(NodeNames.UNSEEN_COUNT).getValue() != null){
+                    currentCount = snapshot.child(NodeNames.UNSEEN_COUNT).getValue().toString();
+                }
+                Map chatMap = new HashMap();
+                chatMap.put(NodeNames.TIMESTAMP, ServerValue.TIMESTAMP);
+                chatMap.put(NodeNames.UNSEEN_COUNT,Integer.valueOf(currentCount)+1);
+
+                Map userChatMap = new HashMap<>();
+                userChatMap.put(NodeNames.CHAT + "/"+chatUserId+"/"+currentUserId,chatMap);
+
+                rootDatabaseRef.updateChildren(userChatMap, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        if(error != null){
+                            Toast.makeText(context,"Something went wrong : "+error.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(context,"Something went wrong : "+error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

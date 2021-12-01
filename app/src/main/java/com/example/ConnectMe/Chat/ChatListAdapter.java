@@ -65,6 +65,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 //
 //            }
 //        });
+        // Unseen Count
+        if(listElement.getUnseenCount().equals("0")){
+            holder.unseenCount.setVisibility(View.GONE);
+        }
+        else{
+            holder.unseenCount.setVisibility(View.VISIBLE);
+            holder.unseenCount.setText(listElement.getUnseenCount());
+        }
+
         try{
            Uri userPhotoUri = Uri.parse(listElement.getUserPhoto());
            Glide.with(context)
@@ -83,6 +92,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             @Override
             public void onClick(View view) {
                // navigate to main activity with the friends user id
+                // need to set unseen count to 0
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra(Extras.USER_KEY,listElement.getUserId());
                 intent.putExtra(Extras.USER_NAME,listElement.getUserName());

@@ -43,6 +43,7 @@ public class ChatFragment extends Fragment {
     private DatabaseReference chatDatabaseReference,databaseReference;
 
     private List<ChatListModel> chatList;
+    private List<String> userIdList;
 
     private ChatListAdapter chatListAdapter;
 
@@ -77,6 +78,7 @@ public class ChatFragment extends Fragment {
 
         // initializing the chat list
         chatList = new ArrayList<>();
+        userIdList = new ArrayList<>();
 
         chatListAdapter = new ChatListAdapter(getActivity(),chatList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -95,6 +97,7 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                updateList(snapshot,false,snapshot.getKey());
             }
 
             @Override
@@ -119,7 +122,9 @@ public class ChatFragment extends Fragment {
     private void updateList(@NotNull DataSnapshot snapshot,Boolean isNew,String userId){
             // need to add data to chatList
         progressBar.setVisibility(View.VISIBLE);
-        String lastMessage = "",lastMessageTime= "",unseenCount = "";// refer from messages Node
+        String lastMessage = "",lastMessageTime= "";// refer from messages Node
+        String unseenCount = snapshot.child(NodeNames.UNSEEN_COUNT).getValue() == null ? "0" : snapshot.child(NodeNames.UNSEEN_COUNT).getValue().toString();
+
         databaseReference.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -132,7 +137,16 @@ public class ChatFragment extends Fragment {
                     Toast.makeText(getActivity(),userName + " : " + userPhoto,Toast.LENGTH_SHORT).show();
                     Log.i("ChatFragment",userName + " : " + userPhoto);
 
-                    chatList.add(new ChatListModel(userId,userName,userPhoto,lastMessage,lastMessageTime,unseenCount));
+                    // only if the user is new , directly add to the list
+                    ChatListModel chatListModel = new ChatListModel(userId,userName,userPhoto,lastMessage,lastMessageTime,unseenCount);
+                    if(isNew){
+                        chatList.add(chatListModel);
+                        userIdList.add(userId);
+                    }
+                    else{
+                        int indexOfClickedUser = userIdList.indexOf(userId);
+                        chatList.set(indexOfClickedUser,chatListModel);
+                    }
                     chatListAdapter.notifyDataSetChanged();
                 }
                 else{

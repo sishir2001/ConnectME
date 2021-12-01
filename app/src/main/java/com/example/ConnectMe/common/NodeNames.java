@@ -19,4 +19,5 @@ public class NodeNames {
     public static final String MESSAGES = "messages" ;
     public static final String TOKENS = "tokens" ;
     public static final String DEVICE_TOKEN = "device_token" ;
+    public static final String UNSEEN_COUNT = "unseen_count" ;
 }
