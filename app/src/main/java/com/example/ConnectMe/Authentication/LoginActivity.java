@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         // setting click listener on Login Button
         binding.buttonLogin.setOnClickListener(view1 -> clickedLoginBtn());
         binding.textViewForgotPassWord.setOnClickListener(view1 -> {
-            Toast.makeText(LoginActivity.this, "Forgot Password", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(LoginActivity.this, "Forgot Password", Toast.LENGTH_SHORT).show();
         });
         binding.textViewSignUp.setOnClickListener(view1 -> {
             // intent to SignUp Activity

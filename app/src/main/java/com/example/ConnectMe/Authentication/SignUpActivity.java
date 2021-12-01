@@ -97,9 +97,9 @@ public class SignUpActivity extends AppCompatActivity {
         }
         else{
             // request for the user permission
-            Toast.makeText(SignUpActivity.this,"Requesting Permission from activityCompat",Toast.LENGTH_SHORT).show();
+//            Toast.makeText(SignUpActivity.this,"Requesting Permission from activityCompat",Toast.LENGTH_SHORT).show();
             if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)){
-                Toast.makeText(SignUpActivity.this,"Should Show Rationale",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SignUpActivity.this,"Should Show Rationale",Toast.LENGTH_SHORT).show();
                 // build a AlertBox
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Permission Needed")
@@ -121,7 +121,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
             else{
                 // directly request permission
-                Toast.makeText(SignUpActivity.this,"Not required to Show Rationale",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SignUpActivity.this,"Not required to Show Rationale",Toast.LENGTH_SHORT).show();
                 ActivityCompat.requestPermissions(SignUpActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},102);
             }
             // need to handle this response of a permission in a callback
@@ -235,7 +235,7 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                         else{
 //                           progressBar.setVisibility(View.GONE);
-                            Toast.makeText(SignUpActivity.this,getString(R.string.user_updation_failed,task.getException()), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(SignUpActivity.this,getString(R.string.user_updation_failed,task.getException()), Toast.LENGTH_LONG).show();
                             Log.i("SignUpActivity","Failed to Update profile using firebaseUser.updateProfile()");
                         }
 
@@ -283,7 +283,7 @@ public class SignUpActivity extends AppCompatActivity {
                         startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                     }
                     else{
-                        Toast.makeText(SignUpActivity.this, "Updation of Hashmap of userProfile failed : "+task1.getException(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(SignUpActivity.this, "Updation of Hashmap of userProfile failed : "+task1.getException(), Toast.LENGTH_SHORT).show();
                         Log.i("SignUpActivity","Updation of user profile failed : "+task1.getException());
                     }
                 });
@@ -329,7 +329,7 @@ public class SignUpActivity extends AppCompatActivity {
                     if(task.isSuccessful()){
                         // geting the firebase user
                         firebaseUser = firebaseAuth.getCurrentUser();
-                        Toast.makeText(SignUpActivity.this,"Creating User in Authentication FireBase is done", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(SignUpActivity.this,"Creating User in Authentication FireBase is done", Toast.LENGTH_LONG).show();
                         if(localFileUri!=null){
                             updatePicAndName();
                         }

@@ -88,7 +88,7 @@
                 android:text="@string/change_password"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#C61616" />
+                android:textColor="@color/app_red" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -98,7 +98,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        android:backgroundTint="#E91E63"
+        android:backgroundTint="@color/app_red"
         android:text="@string/logout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

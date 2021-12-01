@@ -38,11 +38,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:backgroundTint="#145C99"
         android:text="@string/send_friend_request"
         android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintStart_toEndOf="@+id/civDefualtProfile"
-        app:layout_constraintTop_toBottomOf="@+id/tvFullName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvFullName"
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/btnCancelRequest"
@@ -50,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:backgroundTint="@android:color/holo_red_dark"
+        android:backgroundTint="@color/app_red"
         android:text="@string/cancel_friend_request"
         android:textSize="10sp"
         android:visibility="gone"

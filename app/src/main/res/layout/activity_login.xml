@@ -19,13 +19,13 @@
 
     <ImageView
         android:id="@+id/imageViewChatIcon"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_chat" />
+        app:srcCompat="@drawable/connectme" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewLogin"

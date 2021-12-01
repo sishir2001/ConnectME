@@ -32,8 +32,8 @@
 
         <ImageView
             android:id="@+id/ivRecieveImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_message_image" />
     </LinearLayout>
@@ -54,8 +54,8 @@
 
         <ImageView
             android:id="@+id/ivSendImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             app:srcCompat="@drawable/ic_message_image" />
 
         <TextView
@@ -76,7 +76,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/message_sent_bg"
-        android:elevation="5dp"
+        android:elevation="2dp"
         android:orientation="horizontal"
         android:padding="3dp"
         android:visibility="gone"
@@ -114,7 +114,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/message_recieved_bg"
-        android:elevation="5dp"
+        android:elevation="2dp"
         android:orientation="horizontal"
         android:padding="3dp"
         android:visibility="gone"

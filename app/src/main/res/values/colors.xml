@@ -12,12 +12,23 @@
     <color name="chat_bg">#E3E0E0</color>
 
 <!--    App Color Pallete-->
-    <color name="primaryColor">#42a5f5</color>
-    <color name="primaryLightColor">#80d6ff</color>
+    <color name="primaryColor">#105B98</color>
+    <color name="primaryLightColor">#28BAFF</color>
+    <color name="primaryLightColor2">#B72F28FF</color>
     <color name="primaryDarkColor">#0077c2</color>
     <color name="secondaryColor">#0d47a1</color>
     <color name="secondaryLightColor">#5472d3</color>
     <color name="secondaryDarkColor">#002171</color>
-    <color name="primaryTextColor">#000000</color>
+    <color name="primaryTextColor">#FFFFFF</color>
     <color name="secondaryTextColor">#ffffff</color>
+    <color name="app_red">#DDFF3C3C</color>
+
+<!--    <color name="primaryColor">#42a5f5</color>-->
+<!--    <color name="primaryLightColor">#80d6ff</color>-->
+<!--    <color name="primaryDarkColor">#0077c2</color>-->
+<!--    <color name="secondaryColor">#0d47a1</color>-->
+<!--    <color name="secondaryLightColor">#5472d3</color>-->
+<!--    <color name="secondaryDarkColor">#002171</color>-->
+<!--    <color name="primaryTextColor">#000000</color>-->
+<!--    <color name="secondaryTextColor">#ffffff</color>-->
 </resources>
