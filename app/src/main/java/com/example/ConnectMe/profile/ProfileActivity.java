@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.ConnectMe.Authentication.LoginActivity;
+import com.example.ConnectMe.MainActivity;
 import com.example.ConnectMe.common.Constants;
 import com.example.ConnectMe.passwords.ChangePasswordActivity;
 import com.example.ConnectMe.MessageActivity;
@@ -58,12 +59,13 @@ public class ProfileActivity extends AppCompatActivity {
     // StorageReference for static file storage
     private StorageReference fileStorage;
     private Uri localFileUri,serverFileUri;
-//    private View progressBar;
+    private View progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.displayProgressBar);
+//        progressBar.setVisibility(View.GONE);
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
@@ -113,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity {
         binding.buttonLogout.setOnClickListener(view1 -> {
             FirebaseUser currentUser = firebaseAuth.getCurrentUser();
             DatabaseReference tokenDatabaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference()
-                    .child(NodeNames.TOKENS).child(NodeNames.DEVICE_TOKEN).child(currentUser.getUid());
+                    .child(NodeNames.TOKENS).child(currentUser.getUid()).child(NodeNames.DEVICE_TOKEN);
             tokenDatabaseReference.setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -151,6 +153,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.etEmail.setError(getString(R.string.enter_correct_email));
         }
         else{
+//            progressBar.setVisibility(View.VISIBLE);
             if(Util.connectionAvailable(this)){
                 if(localFileUri!=null){
                     // user has picked a profile picture
@@ -159,6 +162,8 @@ public class ProfileActivity extends AppCompatActivity {
                 else{
                     updateOnlyName();
                 }
+                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+//                progressBar.setVisibility(View.GONE);
             }
             else{
                 startActivity(new Intent(ProfileActivity.this,MessageActivity.class));

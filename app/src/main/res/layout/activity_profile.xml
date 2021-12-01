@@ -9,16 +9,23 @@
 
     <include
         android:id="@+id/displayProgressBar"
+        layout="@layout/custom_progressbar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="gone"
-        layout="@layout/custom_progressbar"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ImageViewdefaultProfile"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="32dp"
-        app:civ_border_width="2dp"
-        app:civ_border_color="@color/secondaryDarkColor"
         android:src="@drawable/default_profile"
+        app:civ_border_color="@color/secondaryDarkColor"
+        app:civ_border_width="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
