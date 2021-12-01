@@ -209,11 +209,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             String message = selectedView.getTag(R.id.TAG_MESSAGE).toString();
 
             switch(item.getItemId()){
-                case R.id.mnuForward:
-                    Toast.makeText(context, "Forward Clicked", Toast.LENGTH_SHORT).show();
-                    mode.finish();
-                    return true;
-
+//                case R.id.mnuForward:
+//                    Toast.makeText(context, "Forward Clicked", Toast.LENGTH_SHORT).show();
+//                    mode.finish();
+//                    return true;
+//
                 case R.id.mnuDelete:
                     if(context instanceof ChatActivity){
                         ((ChatActivity)context).deleteMessage(messageId,messageType);
