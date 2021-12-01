@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.ConnectMe.Authentication.LoginActivity;
+import com.example.ConnectMe.common.Util;
 import com.example.ConnectMe.slideInfo.fragments.SlideFragmentFive;
 import com.example.ConnectMe.slideInfo.fragments.SlideFragmentFour;
 import com.example.ConnectMe.slideInfo.fragments.SlideFragmentOne;
@@ -22,8 +23,11 @@ import com.example.ConnectMe.slideInfo.fragments.SlideFragmentThree;
 import com.example.ConnectMe.slideInfo.fragments.SlideFragmentTwo;
 import com.example.ConnectMe.MainActivity;
 import com.example.ConnectMe.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class slideinfoActivity extends AppCompatActivity {
 
@@ -79,6 +83,23 @@ public class slideinfoActivity extends AppCompatActivity {
         Log.i("slideInfoActivity","Inside onStart()");
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser != null){
+            // Updating the device token in the firebase database
+            // get the token from Firebase cloud messaging->FirebaseInstanceId(Depricated)
+//            Util.updateDeviceToken(this);
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(new OnCompleteListener<String>() {
+                        @Override
+                        public void onComplete(@NonNull Task<String> task) {
+                            if(!task.isSuccessful()){
+                               Log.i("slideinfoActivity","Fetching device token failed");
+                            }
+                            else{
+                                // getting the new token
+                                String token = task.getResult();
+                                Util.updateDeviceToken(slideinfoActivity.this,token);
+                            }
+                        }
+                    });
             // User is already logged in
             Toast.makeText(slideinfoActivity.this,"User is already loggedin "+firebaseUser.getEmail(),Toast.LENGTH_LONG).show();
             startActivity(new Intent(slideinfoActivity.this, MainActivity.class));

@@ -15,18 +15,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApplication">
+        <service
+            android:name=".ChatMessagingService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
-            android:name="com.example.ConnectMe.Messages.ChatActivity"
+            android:name=".Messages.ChatActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.ConnectMe.MessageActivity"
+            android:name=".MessageActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.ConnectMe.slideInfo.slideinfoActivity"
+            android:name=".slideInfo.slideinfoActivity"
             android:exported="false"
             android:theme="@style/Theme.ChatApplication.NoActionBar" />
         <activity
-            android:name="com.example.ConnectMe.splash.SplashActivity"
+            android:name=".splash.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.ChatApplication.NoActionBar">
             <intent-filter>
@@ -36,22 +45,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.ConnectMe.passwords.ResetPasswordActivity"
+            android:name=".passwords.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.ConnectMe.passwords.ChangePasswordActivity"
+            android:name=".passwords.ChangePasswordActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.ConnectMe.MainActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.ConnectMe.profile.ProfileActivity"
+            android:name=".profile.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.ConnectMe.Authentication.SignUpActivity"
+            android:name=".Authentication.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.ConnectMe.Authentication.LoginActivity"
+            android:name=".Authentication.LoginActivity"
             android:exported="true" />
     </application>
 
