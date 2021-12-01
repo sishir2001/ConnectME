@@ -13,5 +13,10 @@ public class Constants {
     // Storage Folders
     public static final String MESSAGE_IMAGES = "message_images";
     public static final String MESSAGE_VIDEOS = "message_videos";
-
+    public static final String NOTIFICATION_TITLE = "title";
+    public static final String NOTIFICATION_MESSAGE = "message" ;
+    public static final String NOTIFICATION_TO = "to" ;
+    public static final String NOTIFICATION_DATA = "data" ;
+    public static final String FIREBASE_KEY = "AAAAV9N6tGo:APA91bEufzNHBwR2UBHz-6z8IJe5LEtoMjuzaoEePfrCmcLipdlEdc9ZKNQvGO-lP_SVkdyhs22qyMzrCvT0fjsBinVmyk2fLqhWw5CTTo3xetBM5dJyRuNrONpZI6RqRfctROdnZMnx";
+    public static final String SENDER_ID = "377210188906";
 }

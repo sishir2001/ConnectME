@@ -101,4 +101,5 @@
     <string name="view">View</string>
     <string name="intent_share_with">Share with ...</string>
     <string name="failed_to_save_token">Failed to save device token %1$s</string>
+    <string name="failed_send_notification">Failed to send notification %14s</string>
 </resources>

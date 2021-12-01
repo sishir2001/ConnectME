@@ -7,16 +7,28 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.ConnectMe.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class Util {
@@ -57,5 +69,84 @@ public class Util {
                         }
                     });
         }
+    }
+    public static void sendNotification(Context context,String title,String messsage,String userId){
+        // userId - > other user uuid
+        // For sending messages we need device token of userId
+
+        DatabaseReference rootDatabaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference();
+        DatabaseReference tokenDatabaseReference = rootDatabaseReference.child(NodeNames.TOKENS).child(userId);
+
+        tokenDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.child(NodeNames.DEVICE_TOKEN).getValue() != null){
+                            String deviceToken = snapshot.child(NodeNames.DEVICE_TOKEN).getValue().toString();
+
+                            // creating a json object for notification
+                            JSONObject notification = new JSONObject();
+                            JSONObject notificationData = new JSONObject();
+
+                            // filling the json object
+                            try {
+                                notificationData.put(Constants.NOTIFICATION_TITLE,title);
+                                notificationData.put(Constants.NOTIFICATION_MESSAGE,messsage);
+
+                                notification.put(Constants.NOTIFICATION_TO,deviceToken);
+                                notification.put(Constants.NOTIFICATION_DATA,notificationData);
+
+                                // two famous libraries for using api's - Volley and Retrofit
+                                // Web api call to firebase
+                                // We need to provide authentication
+                                String fcmApiUrl = "https://fcm.googleapis.com/fcm/send";
+                                String contentType = "application/json";
+
+                                Response.Listener successListener = new Response.Listener() {
+                                    @Override
+                                    public void onResponse(Object response) {
+                                        Toast.makeText(context,"Notification Successfully sent",Toast.LENGTH_SHORT).show();
+                                    }
+                                };
+
+                                Response.ErrorListener failureListener =  new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(context,context.getString(R.string.failed_send_notification,error.getMessage()),Toast.LENGTH_SHORT).show();
+                                    }
+                                };
+
+                                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(fcmApiUrl,notification,successListener,failureListener){
+
+                                    @Override
+                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                        Map<String,String> params = new HashMap<>();
+                                        params.put("Authorization","key="+Constants.FIREBASE_KEY);
+                                        params.put("Sender","id="+Constants.SENDER_ID);
+                                        params.put("Content-Type",contentType);
+                                        return params ;
+                                    }
+                                };
+
+                                RequestQueue requestQueue = Volley.newRequestQueue(context);
+                                requestQueue.add(jsonObjectRequest);
+
+                            }
+                            catch(JSONException e){
+                                Toast.makeText(context,context.getString(R.string.failed_send_notification,e.getMessage()),Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                        else{
+                            // does not exist
+                            Toast.makeText(context,context.getString(R.string.failed_send_notification,""),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // error
+                        Toast.makeText(context,context.getString(R.string.failed_send_notification,error.getMessage()),Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

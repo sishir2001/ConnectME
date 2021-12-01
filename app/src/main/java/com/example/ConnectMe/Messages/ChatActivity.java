@@ -732,6 +732,19 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                        }
                        else{
                            Toast.makeText(ChatActivity.this,getString(R.string.message_sent_success), Toast.LENGTH_SHORT).show();
+
+                           String notificationTitle = "";
+                           if(msgType.equals(Constants.MSG_TYPE_TEXT)){
+                               notificationTitle = "New Message";
+                           }
+                           else if(msgType.equals(Constants.MSG_TYPE_IMG)){
+                               notificationTitle = "New Image";
+                           }
+                           else if(msgType.equals(Constants.MSG_TYPE_VID)){
+                               notificationTitle = "New Video";
+                           }
+                           String notificationMessage = msg;
+                           Util.sendNotification(ChatActivity.this,notificationTitle,notificationMessage,chatUserId);
                        }
                     }
                 });

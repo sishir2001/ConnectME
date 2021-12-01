@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.ConnectMe.R;
 import com.example.ConnectMe.common.Constants;
 import com.example.ConnectMe.common.NodeNames;
+import com.example.ConnectMe.common.Util;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -137,6 +138,10 @@ public class FindFriendsAdapter extends RecyclerView.Adapter<FindFriendsAdapter.
                                 .setValue(Constants.REQ_RECIEVED).addOnCompleteListener(task1 -> {
                                     if(task1.isSuccessful()){
                                         Toast.makeText(view.getContext(), "Request Sent Successfully", Toast.LENGTH_SHORT).show();
+
+                                        String notificationTitle = "New Friend Request";
+                                        String notificationMessage = "Friend Request from : "+currentUser.getDisplayName();
+                                        Util.sendNotification(context,notificationTitle,notificationMessage, listElement.getUserId());
                                     }
                         });
                     }
