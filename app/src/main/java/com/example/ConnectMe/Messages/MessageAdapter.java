@@ -221,13 +221,27 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     mode.finish();
                     return true;
                 case R.id.mnuShare:
-                    Toast.makeText(context, "Share Clicked", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Share Clicked", Toast.LENGTH_SHORT).show();
+                    if(messageType.equals(Constants.MSG_TYPE_TEXT)){
+                        // directly sharing from here
+                        Intent shareIntent = new Intent();
+                        shareIntent.setAction(Intent.ACTION_SEND);
+                        shareIntent.putExtra(Intent.EXTRA_TEXT,message);
+                        shareIntent.setType("text/plain");
+                        context.startActivity(shareIntent);
+                    }
+                    else{
+                        // downloading and sharing the file
+                        if(context instanceof ChatActivity){
+                            ((ChatActivity)context).downloadFile(messageId,messageType,true);
+                        }
+                    }
                     mode.finish();
                     return true;
                 case R.id.mnuDownload:
 //                    Toast.makeText(context, "Download Clicked", Toast.LENGTH_SHORT).show();
                     if(context instanceof ChatActivity){
-                        ((ChatActivity)context).downloadFile(messageId,messageType);
+                        ((ChatActivity)context).downloadFile(messageId,messageType,false);
                     }
                     mode.finish();
                     return true;

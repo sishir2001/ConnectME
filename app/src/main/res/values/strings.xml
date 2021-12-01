@@ -99,4 +99,5 @@
     <string name="failed_to_download_file">Failed to download file : %1$s</string>
     <string name="file_downloaded_successfully">File downloaded successfully</string>
     <string name="view">View</string>
+    <string name="intent_share_with">Share with ...</string>
 </resources>

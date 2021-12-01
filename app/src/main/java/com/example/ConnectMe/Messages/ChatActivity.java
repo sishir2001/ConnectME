@@ -378,7 +378,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         uploadProgress(task,pushId,fileRef,msgType);
     }
 
-    public void downloadFile(String messageId,String messageType){
+    public void downloadFile(String messageId,String messageType,Boolean isShare){
         // Check permission for external Storage write
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
            // check for rationale
@@ -415,7 +415,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 if(localFile.exists() || localFile.createNewFile()){
                     FileDownloadTask downloadTask = fileRef.getFile(localFile);
-                    downloadProgress(downloadTask,localFilePath,messageType);
+                    downloadProgress(downloadTask,localFilePath,messageType,isShare);
                 }
 
             }
@@ -439,7 +439,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         // next monitor the progress of the file uploading
         uploadProgress(task,pushId,fileRef,msgType);
     }
-    private void downloadProgress(FileDownloadTask downloadTask,String localFilePath,String messageType){
+    private void downloadProgress(FileDownloadTask downloadTask,String localFilePath,String messageType,Boolean isShare){
         /*
          * @param downloadTask - To know the progress of the download
          * @param localFilePath - where to download the file
@@ -519,22 +519,37 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 if(task.isSuccessful()){
                     // show snackbar to show the file
                     Toast.makeText(ChatActivity.this,"Download Successful", Toast.LENGTH_SHORT).show();// Debug
-                    Snackbar snackbar = Snackbar.make(binding.llProgress, R.string.file_downloaded_successfully,Snackbar.LENGTH_INDEFINITE);
-                    snackbar.setAction(R.string.view, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // creating an intent
-                            Uri uri = Uri.parse(localFilePath);
-                            Intent intent = new Intent(Intent.ACTION_VIEW,uri);
-                            if(messageType.equals(Constants.MSG_TYPE_IMG)){
-                               intent.setDataAndType(uri,"image/jpg") ;
-                            }
-                            else if(messageType.equals(Constants.MSG_TYPE_VID)){
-                                intent.setDataAndType(uri,"video/mp4") ;
-                            }
-                            startActivity(intent);
+                    if(isShare){
+                        // open intent to share files
+                        Intent shareFileIntent = new Intent();
+                        shareFileIntent.setAction(Intent.ACTION_SEND);
+                        shareFileIntent.putExtra(Intent.EXTRA_STREAM,Uri.parse(localFilePath));
+                        if(messageType.equals(Constants.MSG_TYPE_VID)){
+                            shareFileIntent.setType("video/mp4");
                         }
-                    }).show();
+                        else if(messageType.equals(Constants.MSG_TYPE_IMG)){
+                            shareFileIntent.setType("image/jpg");
+                        }
+                        startActivity(Intent.createChooser(shareFileIntent,getString(R.string.intent_share_with)));
+                    }
+                    else{
+                        Snackbar snackbar = Snackbar.make(binding.llProgress, R.string.file_downloaded_successfully,Snackbar.LENGTH_INDEFINITE);
+                        snackbar.setAction(R.string.view, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // creating an intent
+                                Uri uri = Uri.parse(localFilePath);
+                                Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                                if(messageType.equals(Constants.MSG_TYPE_IMG)){
+                                    intent.setDataAndType(uri,"image/jpg") ;
+                                }
+                                else if(messageType.equals(Constants.MSG_TYPE_VID)){
+                                    intent.setDataAndType(uri,"video/mp4") ;
+                                }
+                                startActivity(intent);
+                            }
+                        }).show();
+                    }
                 }
             }
         });
