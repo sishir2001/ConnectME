@@ -80,4 +80,26 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="video">Video</string>
+    <string name="cancel_uploading_file">Cancel uploading file</string>
+    <string name="are_you_sure_cancel_file_upload">Are you to cancel uploading the file</string>
+    <string name="yes">YES</string>
+    <string name="uploading_progress">Uploading %1$s (%2$s %%)</string>
+    <string name="failed_to_upload">Failed to Upload : %1$s</string>
+    <string name="forward">forward</string>
+    <string name="delete">delete</string>
+    <string name="share">share</string>
+    <string name="download">download</string>
+    <string name="message_deletion_error">Deletion error:%1$s</string>
+    <string name="message_deleted_successfully">Message Deleted Successfully</string>
+    <string name="error_deletion_cloud">Error in deletion of file in cloud %1$s</string>
+    <string name="failed_to_download">Failed to download the file</string>
+    <string name="cancel_downloading_file">Cancel Downloading File</string>
+    <string name="are_you_sure_cancel_file_download">Are you to cancel the file download</string>
+    <string name="downloading_progress">Downloading %1$s (  %2$s %%)</string>
+    <string name="failed_to_download_file">Failed to download file : %1$s</string>
+    <string name="file_downloaded_successfully">File downloaded successfully</string>
+    <string name="view">View</string>
+    <string name="intent_share_with">Share with ...</string>
+    <string name="failed_to_save_token">Failed to save device token %1$s</string>
+    <string name="failed_send_notification">Failed to send notification %14s</string>
 </resources>

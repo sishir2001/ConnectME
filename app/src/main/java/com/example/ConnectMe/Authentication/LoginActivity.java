@@ -35,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        getSupportActionBar().setTitle(getString(R.string.login));
         // initializing FireBase
         mAuth = FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.displayProgressBar);

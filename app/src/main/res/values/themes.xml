@@ -5,11 +5,11 @@
 <!--        <item name="colorPrimary">@color/purple_500</item>-->
 <!--        <item name="colorPrimaryVariant">@color/purple_700</item>-->
 <!--        <item name="colorOnPrimary">@color/white</item>-->
-<!--        &lt;!&ndash; Secondary brand color. &ndash;&gt;-->
+<!--         Secondary brand color. -->
 <!--        <item name="colorSecondary">@color/teal_200</item>-->
 <!--        <item name="colorSecondaryVariant">@color/teal_700</item>-->
 <!--        <item name="colorOnSecondary">@color/black</item>-->
-<!--        &lt;!&ndash; Status bar color. &ndash;&gt;-->
+        <!-- Status bar color. -->
 <!--        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>-->
 <!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
         <!-- Primary brand color. -->
@@ -25,6 +25,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">@color/secondaryDarkColor</item>
         <!-- Customize your theme here. -->
 <!--        <item name="background">@color/secondaryDarkColor</item>-->
+        <item name="actionModeBackground">@color/primaryColor</item>
     </style>
 
     <style name="Theme.ChatApplication.NoActionBar">

@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.ConnectMe.R;
 import com.example.ConnectMe.common.Constants;
 import com.example.ConnectMe.common.NodeNames;
+import com.example.ConnectMe.common.Util;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -65,14 +66,26 @@ public class FindFriendsAdapter extends RecyclerView.Adapter<FindFriendsAdapter.
         // using glide to dowload the image from the FirebaseStorage
         StorageReference fileRef = FirebaseStorage.getInstance().getReference(NodeNames.IMAGES+"/"+listElement.getUserPhoto());
         // get the uri of the photo using fileref
-        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-               // using glide to download the uri
-                Glide.with(context).load(uri).placeholder(R.drawable.default_profile).error(R.drawable.default_profile)
-                .into(holder.civProfile);
-            }
-        });
+//        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//               // using glide to download the uri
+//                Glide.with(context).load(uri).placeholder(R.drawable.default_profile).error(R.drawable.default_profile1)
+//                .into(holder.civProfile);
+//            }
+//        });
+
+        try{
+            Uri userPhotoUri = Uri.parse(listElement.getUserPhoto());
+            Glide.with(context)
+                    .load(userPhotoUri)
+                    .error(R.drawable.default_profile1)
+                    .placeholder(R.drawable.default_profile)
+                    .into(holder.civProfile);
+        }
+        catch (Exception e){
+            Toast.makeText(context,"Error in downloading " + listElement.getUserName() + "photo",Toast.LENGTH_SHORT).show();
+        }
 
         // checking for the view of layout
         if(listElement.isAcceptRequest()){
@@ -125,6 +138,10 @@ public class FindFriendsAdapter extends RecyclerView.Adapter<FindFriendsAdapter.
                                 .setValue(Constants.REQ_RECIEVED).addOnCompleteListener(task1 -> {
                                     if(task1.isSuccessful()){
                                         Toast.makeText(view.getContext(), "Request Sent Successfully", Toast.LENGTH_SHORT).show();
+
+                                        String notificationTitle = "New Friend Request";
+                                        String notificationMessage = "Friend Request from : "+currentUser.getDisplayName();
+                                        Util.sendNotification(context,notificationTitle,notificationMessage, listElement.getUserId());
                                     }
                         });
                     }

@@ -18,6 +18,8 @@
         tools:visibility="visible" />
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ImageViewdefaultProfile"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/secondaryDarkColor"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="32dp"

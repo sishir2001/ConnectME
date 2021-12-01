@@ -2,6 +2,7 @@ package com.example.ConnectMe.Authentication;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -50,9 +52,17 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
         super.onCreate(savedInstanceState);
 //        progressBar = findViewById(R.id.progressBar);
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
+        // Action Bar setup
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
         // Initializing filestorage
         fileStorage = FirebaseStorage.getInstance().getReference();// will give reference to the root folder
         // View Binding
@@ -63,6 +73,19 @@ public class SignUpActivity extends AppCompatActivity {
         binding.ImageViewdefaultProfile.setOnClickListener(view1 -> pickImage());
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void pickImage(){
         // when the user clicks on the default profile pic to choose a pic from gallery
         // Permission needs to be taken in the manifest file
@@ -176,6 +199,7 @@ public class SignUpActivity extends AppCompatActivity {
                 // we need to update the location of the file in the server for Users realtime database
                 fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     serverFileUri = uri;
+                    Log.i("SignUpActivity","serverFileUri : "+serverFileUri);
                     // now we need to update the User profile in realtime database with the link of Profile Picture stored in Firebase Storage
                     UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                             .setDisplayName(binding.etName.getText().toString().trim())
@@ -193,7 +217,8 @@ public class SignUpActivity extends AppCompatActivity {
                             hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
                             hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
                             hashMap.put(NodeNames.ONLINE,getResources().getString(R.string.online));
-                            hashMap.put(NodeNames.PHOTO,serverFileUri.getPath());
+//                            hashMap.put(NodeNames.PHOTO,serverFileUri.getPath());
+                            hashMap.put(NodeNames.PHOTO,serverFileUri.toString());
 
 //                           progressBar.setVisibility(View.VISIBLE);
                             // pushing the data to the child node

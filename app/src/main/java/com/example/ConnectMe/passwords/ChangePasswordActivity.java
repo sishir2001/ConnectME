@@ -1,9 +1,13 @@
 package com.example.ConnectMe.passwords;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.ConnectMe.R;
@@ -24,6 +28,30 @@ public class ChangePasswordActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
         binding.buttonResetPassword.setOnClickListener(view1 -> clickedChangePassBtn());
+
+        // ActionBar code
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setTitle(getString(R.string.reset_password));
+            // for up button in this activity
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setElevation(1);
+
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId){
+            // Handling the Up button
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
     private void clickedChangePassBtn(){
         // verify the edittext

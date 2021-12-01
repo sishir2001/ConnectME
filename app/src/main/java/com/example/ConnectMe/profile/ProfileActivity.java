@@ -2,6 +2,7 @@ package com.example.ConnectMe.profile;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -30,6 +31,10 @@ import com.example.ConnectMe.R;
 import com.example.ConnectMe.common.NodeNames;
 import com.example.ConnectMe.common.Util;
 import com.example.ConnectMe.databinding.ActivityProfileBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -40,6 +45,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 
+// TODO : no problem with Photo Uri here , as we can use userURI here
 public class ProfileActivity extends AppCompatActivity {
 
     private String email,name;
@@ -62,6 +68,15 @@ public class ProfileActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+
+            actionBar.setTitle(getString(R.string.profile));
+            actionBar.setElevation(1);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
+
         // Initializing filestorage Storage reference
         fileStorage = FirebaseStorage.getInstance().getReference();// will give reference to the root folder
         // Initializing firebaseauth
@@ -75,6 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.etEmail.setText(firebaseUser.getEmail());
             binding.etName.setText(firebaseUser.getDisplayName());
             serverFileUri = firebaseUser.getPhotoUrl();
+            Toast.makeText(ProfileActivity.this, "photoUrl : "+serverFileUri, Toast.LENGTH_LONG).show();
 
             if(serverFileUri!=null){
                 // user has uploaded the picture
@@ -95,9 +111,24 @@ public class ProfileActivity extends AppCompatActivity {
 
         // setting click listener to logout button
         binding.buttonLogout.setOnClickListener(view1 -> {
-            firebaseAuth.signOut();
-            startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
-            finish(); // even though user clicks the back button, he cannot navigate to this activity
+            FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+            DatabaseReference tokenDatabaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference()
+                    .child(NodeNames.TOKENS).child(NodeNames.DEVICE_TOKEN).child(currentUser.getUid());
+            tokenDatabaseReference.setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Toast.makeText(ProfileActivity.this,"Token revoked",Toast.LENGTH_SHORT);
+                        firebaseAuth.signOut();
+                        startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+                        finish(); // even though user clicks the back button, he cannot navigate to this activity
+
+                    }
+                    else{
+                        Toast.makeText(ProfileActivity.this,"Something went wrong"+task.getException(),Toast.LENGTH_SHORT);
+                    }
+                }
+            });
         });
 
         // setting click listerner to change password text view
@@ -179,7 +210,7 @@ public class ProfileActivity extends AppCompatActivity {
             firebaseUser.updateProfile(request).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     // successfully removed the profile picture . but we need to load the default pic
-                    binding.ImageViewdefaultProfile.setImageDrawable(getResources().getDrawable(R.drawable.default_profile));
+                    binding.ImageViewdefaultProfile.setImageDrawable(getResources().getDrawable(R.drawable.default_profile1));
                     databaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference().child(NodeNames.USERS); // getRefernce gives the refernce of the root
 
                     String userId = firebaseUser.getUid();
@@ -195,7 +226,20 @@ public class ProfileActivity extends AppCompatActivity {
                             Toast.makeText(ProfileActivity.this, "Profile Picture Removed Successfully", Toast.LENGTH_SHORT).show();
                         }
                     });
-
+                    // remove file from cloud storage
+                    String strFileName = firebaseUser.getUid() + ".jpg";
+                    final StorageReference fileRef = fileStorage.child(NodeNames.IMAGES + "/" +strFileName);
+                    fileRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(ProfileActivity.this, "Deleted File even in storage", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(ProfileActivity.this, "Deletion Failed in Cloud", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
                 else{
 //                progressBar.setVisibility(View.GONE);
@@ -334,7 +378,8 @@ public class ProfileActivity extends AppCompatActivity {
                             hashMap.put(NodeNames.NAME,binding.etName.getText().toString().trim());
                             hashMap.put(NodeNames.EMAIL,binding.etEmail.getText().toString().trim());
                             hashMap.put(NodeNames.ONLINE,getString(R.string.online));
-                            hashMap.put(NodeNames.PHOTO,serverFileUri.getPath());
+//                            hashMap.put(NodeNames.PHOTO,serverFileUri.getPath());
+                            hashMap.put(NodeNames.PHOTO,serverFileUri.toString());
 
                             // pushing the data to the child node
                             databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task2 -> {
@@ -364,6 +409,19 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId){
+            // Handling the Up button
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void updateOnlyName(){
