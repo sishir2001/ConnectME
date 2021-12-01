@@ -191,8 +191,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             // Not showing the download option for text messages
             String messageType = selectedView.getTag(R.id.TAG_MESSAGE_TYPE).toString();
             if(messageType.equals(Constants.MSG_TYPE_TEXT)){
-                MenuItem deleteMenuItem = menu.findItem(R.id.mnuDelete);
-                deleteMenuItem.setVisible(false);
+                MenuItem downloadMenuItem = menu.findItem(R.id.mnuDownload);
+                downloadMenuItem.setVisible(false);
             }
             return true;
         }
@@ -225,7 +225,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     mode.finish();
                     return true;
                 case R.id.mnuDownload:
-                    Toast.makeText(context, "Download Clicked", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Download Clicked", Toast.LENGTH_SHORT).show();
+                    if(context instanceof ChatActivity){
+                        ((ChatActivity)context).downloadFile(messageId,messageType);
+                    }
                     mode.finish();
                     return true;
                 default:

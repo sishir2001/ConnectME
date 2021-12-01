@@ -43,6 +43,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -51,12 +52,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -375,8 +378,57 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         uploadProgress(task,pushId,fileRef,msgType);
     }
 
+    public void downloadFile(String messageId,String messageType){
+        // Check permission for external Storage write
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+           // check for rationale
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                // show rationale
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle("Permission Needed")
+                        .setMessage("Need to write to external storage")
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // request the user for permission
+                                ActivityCompat.requestPermissions(ChatActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},2);
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+            else{
+                ActivityCompat.requestPermissions(ChatActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},2);
+            }
+        }
+        else{
+            // We can write data to external file
+            // We know the message through messageId
+            // get uri
+            StorageReference rootStorageReference = FirebaseStorage.getInstance().getReference();
+            String folderName = (messageType.equals(Constants.MSG_TYPE_IMG))?Constants.MESSAGE_IMAGES:Constants.MESSAGE_VIDEOS;
+            String fileName = (messageType.equals(Constants.MSG_TYPE_IMG))?messageId+".jpg":messageId+".mp4";
+            StorageReference fileRef = rootStorageReference.child(folderName).child(fileName);
+
+            String localFilePath = getExternalFilesDir(null).getAbsolutePath() + "/" +fileName;
+            File localFile= new File(localFilePath);
+            try {
+                if(localFile.exists() || localFile.createNewFile()){
+                    FileDownloadTask downloadTask = fileRef.getFile(localFile);
+                    downloadProgress(downloadTask,localFilePath,messageType);
+                }
+
+            }
+            catch (Exception ex){
+                Toast.makeText(ChatActivity.this,getString(R.string.failed_to_download_file,ex.getMessage()), Toast.LENGTH_SHORT).show();// Debug
+
+            }
+
+
+        }
+    }
     private void uploadFile(Uri uri,String msgType){
-       // keeping videos and photos in seperate folder
+        // keeping videos and photos in seperate folder
         StorageReference rootStorageReference = FirebaseStorage.getInstance().getReference();// to the root of the cloud
         String pushId = messagesDatabaseReferences.getKey();// gives a unique id
         String folderName = (msgType.equals(Constants.MSG_TYPE_IMG)) ? Constants.MESSAGE_IMAGES : Constants.MESSAGE_VIDEOS;
@@ -386,6 +438,120 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         UploadTask task =  fileRef.putFile(uri);
         // next monitor the progress of the file uploading
         uploadProgress(task,pushId,fileRef,msgType);
+    }
+    private void downloadProgress(FileDownloadTask downloadTask,String localFilePath,String messageType){
+        /*
+         * @param downloadTask - To know the progress of the download
+         * @param localFilePath - where to download the file
+         * messageType - to identify the type of message while displaying the chats
+         */
+        // Creating a view out of upload xml
+        View view = LayoutInflater.from(ChatActivity.this).inflate(R.layout.progress_file_layout,null);
+        // get views
+        ProgressBar pbProfress = view.findViewById(R.id.pbProgress);
+        TextView tvFileProgress = view.findViewById(R.id.tvFileProgress);
+        ImageView ivPlay = view.findViewById(R.id.ivPlay);
+        ImageView ivPause = view.findViewById(R.id.ivPause);
+        ImageView ivCancel = view.findViewById(R.id.ivCancel);
+
+        ivPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ivPause.setVisibility(View.GONE);
+                ivPlay.setVisibility(View.VISIBLE);
+                downloadTask.pause();
+            }
+        });
+        ivPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ivPlay.setVisibility(View.GONE);
+                ivPause.setVisibility(View.VISIBLE);
+                downloadTask.resume();
+            }
+        });
+        ivCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                ivPlay.setVisibility(View.GONE);
+//                ivPause.setVisibility(View.VISIBLE);
+                // Confirmation with alertBox
+                new MaterialAlertDialogBuilder(ChatActivity.this)
+                        .setTitle(getString(R.string.cancel_downloading_file))
+                        .setMessage(getString(R.string.are_you_sure_cancel_file_download))
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                downloadTask.cancel();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // dont want to cancel the file upload
+                                dialogInterface.cancel();
+                            }
+                        }).create().show();
+            }
+        });
+
+        // Setting the progress Bar
+
+        // Adding this View to the progress Linear layout
+        binding.llProgress.addView(view);
+        tvFileProgress.setText(getString(R.string.downloading_progress,messageType,"0"));
+
+
+        // adding callbacks to tasks
+        downloadTask.addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull FileDownloadTask.TaskSnapshot snapshot) {
+                double progress = (100.0 * snapshot.getBytesTransferred())/ snapshot.getTotalByteCount();
+                pbProfress.setProgress((int)progress);
+                tvFileProgress.setText(getString(R.string.downloading_progress,messageType,String.valueOf(pbProfress.getProgress())));
+            }
+        });
+        downloadTask.addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                //close the progress layout
+                binding.llProgress.removeView(view);
+                if(task.isSuccessful()){
+                    // show snackbar to show the file
+                    Toast.makeText(ChatActivity.this,"Download Successful", Toast.LENGTH_SHORT).show();// Debug
+                    Snackbar snackbar = Snackbar.make(binding.llProgress, R.string.file_downloaded_successfully,Snackbar.LENGTH_INDEFINITE);
+                    snackbar.setAction(R.string.view, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // creating an intent
+                            Uri uri = Uri.parse(localFilePath);
+                            Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                            if(messageType.equals(Constants.MSG_TYPE_IMG)){
+                               intent.setDataAndType(uri,"image/jpg") ;
+                            }
+                            else if(messageType.equals(Constants.MSG_TYPE_VID)){
+                                intent.setDataAndType(uri,"video/mp4") ;
+                            }
+                            startActivity(intent);
+                        }
+                    }).show();
+                }
+            }
+        });
+        downloadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                binding.llProgress.removeView(view);
+                Toast.makeText(ChatActivity.this,getString(R.string.failed_to_download_file,e.getMessage()), Toast.LENGTH_SHORT).show();// Debug
+            }
+        });
+        downloadTask.addOnCanceledListener(new OnCanceledListener() {
+            @Override
+            public void onCanceled() {
+                Toast.makeText(ChatActivity.this,"Cancelled Downloading the file", Toast.LENGTH_SHORT).show();// Debug
+            }
+        });
+
     }
     private void uploadProgress(UploadTask task,String pushId,StorageReference fileRef,String messageType){
         /*
@@ -509,6 +675,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(ChatActivity.this, "Showing bottomDialog", Toast.LENGTH_SHORT).show(); // Debug
                     bottomSheetDialog.show();
                 }
+            }
+            else if(requestCode == 2){
+                Toast.makeText(ChatActivity.this, "Please Click the download button again", Toast.LENGTH_SHORT).show(); // Debug
             }
         }
         else{
