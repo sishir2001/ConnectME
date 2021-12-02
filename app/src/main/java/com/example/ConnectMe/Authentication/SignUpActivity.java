@@ -29,6 +29,7 @@ import com.example.ConnectMe.common.Constants;
 import com.example.ConnectMe.common.NodeNames;
 import com.example.ConnectMe.common.Util;
 import com.example.ConnectMe.databinding.ActivitySignUpBinding;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -130,22 +131,6 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
     }
-//    ActivityResultLauncher<Intent> externalFileAcitivityLauncher = registerForActivityResult(
-//            new ActivityResultContracts.StartActivityForResult(),
-//            new ActivityResultCallback<ActivityResult>() {
-//                @Override
-//                public void onActivityResult(ActivityResult result) {
-//                    if(result.getResultCode() == Activity.RESULT_OK){
-//                        // granted permission
-//                        localFileUri = result.getData().toUri();
-//                    }
-//                }
-//            }
-//    );
-//    private void getActivityResultForExtFileStorage(){
-//        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//
-//    }
 
     // to handle the response of user for dangerous permissions
     @Override
@@ -354,6 +339,11 @@ public class SignUpActivity extends AppCompatActivity {
         // Registering with Firebase
         else{
 //            progressBar.setVisibility(View.VISIBLE);
+            // TODO : build a custom MaterialAlertDialogBuilder
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
+                    .setCustomTitle(getLayoutInflater().inflate(R.layout.custom_progressbar,null));
+            AlertDialog dialog = builder.create();
+            dialog.show();
             binding.tilName.setErrorEnabled(false);
             binding.tilEmail.setErrorEnabled(false);
             binding.tilPassword.setErrorEnabled(false);
@@ -365,20 +355,25 @@ public class SignUpActivity extends AppCompatActivity {
                     if(task.isSuccessful()){
                         // geting the firebase user
                         firebaseUser = firebaseAuth.getCurrentUser();
-                        Toast.makeText(SignUpActivity.this,"Creating User in Authentication FireBase is done", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(SignUpActivity.this,"Creating User in Authentication FireBase is done", Toast.LENGTH_LONG).show();
                         if(localFileUri!=null){
                             updatePicAndName();
                         }
                         else{
                             updateOnlyName();
                         }
+                        // Redirect to Login Activity
+                        dialog.dismiss();
+                        startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
                     }
                     else{
+                        dialog.dismiss();
                         Toast.makeText(SignUpActivity.this,getString(R.string.signup_failed,task.getException()), Toast.LENGTH_LONG).show();
                     }
                 });
             }
             else {
+                dialog.dismiss();
                 startActivity(new Intent(SignUpActivity.this,MessageActivity.class));
             }
             // adds data to FireBaseAuthentication
