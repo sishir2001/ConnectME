@@ -122,48 +122,54 @@ public class ChatFragment extends Fragment {
     private void updateList(@NotNull DataSnapshot snapshot,Boolean isNew,String userId){
             // need to add data to chatList
 //        progressBar.setVisibility(View.VISIBLE);
-        binding.progressBarChatFragment.setVisibility(View.VISIBLE);
-        String lastMessage = "",lastMessageTime= "";// refer from messages Node
-        String unseenCount = snapshot.child(NodeNames.UNSEEN_COUNT).getValue() == null ? "0" : snapshot.child(NodeNames.UNSEEN_COUNT).getValue().toString();
+        if(!snapshot.exists()){
+            binding.textViewEmptyChat.setVisibility(View.VISIBLE);
+            binding.progressBarChatFragment.setVisibility(View.GONE);
+        }
+        else{
+            binding.progressBarChatFragment.setVisibility(View.VISIBLE);
+            String lastMessage = "",lastMessageTime= "";// refer from messages Node
+            String unseenCount = snapshot.child(NodeNames.UNSEEN_COUNT).getValue() == null ? "0" : snapshot.child(NodeNames.UNSEEN_COUNT).getValue().toString();
 
-        databaseReference.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // fetch the data here
-                binding.progressBarChatFragment.setVisibility(View.GONE);
-//                progressBar.setVisibility(View.GONE);
-                binding.textViewEmptyChat.setVisibility(View.GONE); // check
-                if(snapshot.exists()){
-                    String userName = snapshot.child(NodeNames.NAME).getValue().toString() == null ?"":snapshot.child(NodeNames.NAME).getValue().toString();
-                    String userPhoto = snapshot.child(NodeNames.PHOTO).getValue().toString() == null ?"":snapshot.child(NodeNames.PHOTO).getValue().toString();
-                    Toast.makeText(getActivity(),userName + " : " + userPhoto,Toast.LENGTH_SHORT).show();
-                    Log.i("ChatFragment",userName + " : " + userPhoto);
+            databaseReference.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    // fetch the data here
+                    if(snapshot.exists()){
+                        String userName = snapshot.child(NodeNames.NAME).getValue().toString() == null ?"":snapshot.child(NodeNames.NAME).getValue().toString();
+                        String userPhoto = snapshot.child(NodeNames.PHOTO).getValue().toString() == null ?"":snapshot.child(NodeNames.PHOTO).getValue().toString();
+                        Toast.makeText(getActivity(),userName + " : " + userPhoto,Toast.LENGTH_SHORT).show();
+                        Log.i("ChatFragment",userName + " : " + userPhoto);
 
-                    // only if the user is new , directly add to the list
-                    ChatListModel chatListModel = new ChatListModel(userId,userName,userPhoto,lastMessage,lastMessageTime,unseenCount);
-                    if(isNew){
-                        chatList.add(chatListModel);
-                        userIdList.add(userId);
+                        // only if the user is new , directly add to the list
+                        ChatListModel chatListModel = new ChatListModel(userId,userName,userPhoto,lastMessage,lastMessageTime,unseenCount);
+                        if(isNew){
+                            chatList.add(chatListModel);
+                            userIdList.add(userId);
+                        }
+                        else{
+                            int indexOfClickedUser = userIdList.indexOf(userId);
+                            chatList.set(indexOfClickedUser,chatListModel);
+                        }
+                        binding.progressBarChatFragment.setVisibility(View.GONE);
+                        chatListAdapter.notifyDataSetChanged();
                     }
                     else{
-                        int indexOfClickedUser = userIdList.indexOf(userId);
-                        chatList.set(indexOfClickedUser,chatListModel);
+                        binding.progressBarChatFragment.setVisibility(View.GONE);
+                        binding.textViewEmptyChat.setVisibility(View.VISIBLE);
+                        Toast.makeText(getActivity(), "SnapShot doesnt Exist", Toast.LENGTH_SHORT).show();
                     }
-                    chatListAdapter.notifyDataSetChanged();
                 }
-                else{
-                    Toast.makeText(getActivity(), "SnapShot doesnt Exist", Toast.LENGTH_SHORT).show();
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 //                progressBar.setVisibility(View.GONE);
-                binding.progressBarChatFragment.setVisibility(View.GONE);
-                binding.textViewEmptyChat.setVisibility(View.VISIBLE);
-                Toast.makeText(getActivity(), "Couldnt fetch the chats", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    binding.progressBarChatFragment.setVisibility(View.GONE);
+                    binding.textViewEmptyChat.setVisibility(View.VISIBLE);
+                    Toast.makeText(getActivity(), "Couldnt fetch the chats", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     @Override

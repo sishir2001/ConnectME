@@ -57,6 +57,7 @@ public class RequestsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 //        progressBar = view.findViewById(R.id.customProgressBar);
+        binding.textViewEmptyRequest.setVisibility(View.VISIBLE);
 
         // fetching the list from the FriendReq->CurrentUserID->RequestType
         databaseReference = FirebaseDatabase
@@ -77,32 +78,32 @@ public class RequestsFragment extends Fragment {
         binding.recyclerViewRequests.setAdapter(requestAdapter);
 
         // should listen to the child users
-        friendReqDatabaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                fetchRequests();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-//                fetchRequests();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                binding.textViewEmptyRequest.setVisibility(View.VISIBLE);
-                binding.progressBarRequests.setVisibility(View.GONE);
-            }
-        });
+        fetchRequests();
+//        friendReqDatabaseReference.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+////                fetchRequests();
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                binding.textViewEmptyRequest.setVisibility(View.VISIBLE);
+//                binding.progressBarRequests.setVisibility(View.GONE);
+//            }
+//        });
 
     }
 
@@ -111,6 +112,7 @@ public class RequestsFragment extends Fragment {
         binding.progressBarRequests.setVisibility(View.VISIBLE);
         binding.textViewEmptyRequest.setVisibility(View.GONE);
 
+        // listen everytime
         friendReqDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -146,10 +148,13 @@ public class RequestsFragment extends Fragment {
                                     if(snapshot.child(NodeNames.PHOTO).getValue() != null){
                                         photoName = snapshot1.child(NodeNames.PHOTO).getValue().toString();
                                     }
+
+                                    binding.progressBarRequests.setVisibility(View.GONE);
                                     friendRequestList.add(new FriendRequestModel(usrName,photoName,otherUserId));
                                 }
                                 else{
                                     Toast.makeText(getContext(),"SnapShot Doest Exist"+snapshot1.child(NodeNames.NAME).getValue().toString(), Toast.LENGTH_SHORT).show();
+                                    binding.progressBarRequests.setVisibility(View.GONE);
                                 }
                                 // Updates the list after everychange
                                 requestAdapter.notifyDataSetChanged();
@@ -157,6 +162,7 @@ public class RequestsFragment extends Fragment {
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
                                 binding.progressBarRequests.setVisibility(View.GONE);
+                                binding.textViewEmptyRequest.setVisibility(View.VISIBLE);
                                 Toast.makeText(getContext(),"reqType:recieved,onCancelled", Toast.LENGTH_SHORT).show();
                             }
                         });

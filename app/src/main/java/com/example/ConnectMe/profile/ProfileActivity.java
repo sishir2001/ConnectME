@@ -39,8 +39,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -95,7 +98,19 @@ public class ProfileActivity extends AppCompatActivity {
             // Setting the text of Edit Texts
             // Initializing the required ones
             binding.etEmail.setText(firebaseUser.getEmail());
-            binding.etName.setText(firebaseUser.getDisplayName());
+            FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference().child(NodeNames.USERS).child(firebaseUser.getUid()).child(NodeNames.NAME).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        binding.etName.setText(snapshot.getValue().toString());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
             serverFileUri = firebaseUser.getPhotoUrl();
             Toast.makeText(ProfileActivity.this, "photoUrl : "+serverFileUri, Toast.LENGTH_LONG).show();
 
@@ -118,6 +133,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         // setting click listener to logout button
         binding.buttonLogout.setOnClickListener(view1 -> {
+            MaterialAlertDialogBuilder materialBuilder = new MaterialAlertDialogBuilder(this)
+                    .setCustomTitle(getLayoutInflater().inflate(R.layout.custom_progressbar,null));
+
+            AlertDialog alertDialog = materialBuilder.create();
+            alertDialog.show();
             FirebaseUser currentUser = firebaseAuth.getCurrentUser();
             DatabaseReference tokenDatabaseReference = FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference()
                     .child(NodeNames.TOKENS).child(NodeNames.DEVICE_TOKEN).child(currentUser.getUid());
@@ -126,12 +146,14 @@ public class ProfileActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
                         Toast.makeText(ProfileActivity.this,"Token revoked",Toast.LENGTH_SHORT);
+                        alertDialog.dismiss();
                         firebaseAuth.signOut();
                         startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
                         finish(); // even though user clicks the back button, he cannot navigate to this activity
 
                     }
                     else{
+                        alertDialog.dismiss();
                         Toast.makeText(ProfileActivity.this,"Something went wrong"+task.getException(),Toast.LENGTH_SHORT);
                     }
                 }

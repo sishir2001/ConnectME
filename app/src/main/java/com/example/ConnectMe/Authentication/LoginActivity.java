@@ -106,4 +106,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        // exit out of the app
+        finishAffinity();
+        super.onBackPressed();
+    }
 }

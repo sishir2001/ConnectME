@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,7 +40,7 @@ public class FindfriendFragment extends Fragment {
 
     // for xml file
     private FragmentFindfriendBinding binding;
-    private View progressBar;
+//    private View progressBar;
 
     // for adapter
     // list for storing the data fetched from FireBaseDatabase
@@ -64,7 +65,7 @@ public class FindfriendFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        progressBar = view.findViewById(R.id.progressBarFindFriends);
+//        progressBar = view.findViewById(R.id.progressBarFindFriends);
         // here we need to retrieve the list from internet and map it according to the local storing list
 
         databaseReference = FirebaseDatabase
@@ -91,59 +92,67 @@ public class FindfriendFragment extends Fragment {
         updateValueListenerForUsersList();
         // fetching users list
         fetchUsersList(); // call only after updateValueListenerForUsersList()
+        binding.srlUsers.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                binding.srlUsers.setRefreshing(false);
+                updateValueListenerForUsersList();
+                fetchUsersList(); // call only after updateValueListenerForUsersList()
+            }
+        });
 
 //         adding listeners to RequestNode of the current user
 //         for changing the buttons
-        FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference()
-                .child(NodeNames.REQ_FRIENDS)
-                .child(currentUser.getUid())
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//        FirebaseDatabase.getInstance(Constants.DATABASE_LINK).getReference()
+//                .child(NodeNames.REQ_FRIENDS)
+//                .child(currentUser.getUid())
+//                .addChildEventListener(new ChildEventListener() {
+//                    @Override
+//                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 //                        fetchUsersList();
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        fetchUsersList();
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+//                    }
+//
+//                    @Override
+//                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 //                        fetchUsersList();
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+//                    }
+//
+//                    @Override
+//                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+//                        fetchUsersList();
+//                    }
+//
+//                    @Override
+//                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
 //
     }
 
     private void fetchUsersList(){
-        progressBar.setVisibility(View.VISIBLE);
+        binding.progressBarFindFriends.setVisibility(View.VISIBLE);
         // fetching the list
         // Root -> USERS
         Query query = databaseReference.orderByChild(NodeNames.NAME);// listing lexically
         // Root -> USERS
-        query.addListenerForSingleValueEvent(userEventListener);
+        query.addValueEventListener(userEventListener);
     }
 
     private void updateValueListenerForUsersList(){
 
         // Mentioning what to do to the usersList when concerning data is changed anywhere
+        findFriendsModelList.clear();
         userEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // snapshot is like a list
                 // fired every time the data is chaged
-                findFriendsModelList.clear();
 
                 for(DataSnapshot ds:snapshot.getChildren()){
                     // here we need to check the id of the child and current user , so as to not display in the request list
@@ -175,20 +184,24 @@ public class FindfriendFragment extends Fragment {
 //                                   Toast.makeText(getContext(),requestType, Toast.LENGTH_SHORT).show();
                                     Log.i("FindFriendFragment",""+requestType);
                                     if(requestType.equals(Constants.REQ_ACCEPTED)){
+                                        binding.progressBarFindFriends.setVisibility(View.GONE);
                                         findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,true));
                                         findFriendsAdapter.notifyDataSetChanged();// whole data will changed
                                     }
                                     else if(requestType.equals(Constants.REQ_SENT)){
+                                        binding.progressBarFindFriends.setVisibility(View.GONE);
                                         findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,true,false));
                                         findFriendsAdapter.notifyDataSetChanged();// whole data will changed
                                     }
                                     else{
+                                        binding.progressBarFindFriends.setVisibility(View.GONE);
                                         findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,false));
                                         findFriendsAdapter.notifyDataSetChanged();// whole data will changed
                                     }
                                 }
                                 else{
 //                                   Toast.makeText(getContext(),"snapshot doesnt exist", Toast.LENGTH_SHORT).show();
+                                    binding.progressBarFindFriends.setVisibility(View.GONE);
                                     findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,false));
                                     findFriendsAdapter.notifyDataSetChanged();// whole data will changed
                                 }
@@ -197,24 +210,24 @@ public class FindfriendFragment extends Fragment {
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
 //                                Toast.makeText(getContext(), "Inside You Know 1 onCancelled", Toast.LENGTH_SHORT).show();
+                                binding.progressBarFindFriends.setVisibility(View.GONE);
                                 findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,false));
                                 findFriendsAdapter.notifyDataSetChanged();// whole data will changed
                             }
                         });
-                        progressBar.setVisibility(View.GONE);
                     }
                 }
                 // if the list is empty , then no other user other than the signed user
                 if(findFriendsModelList.isEmpty()){
-                    progressBar.setVisibility(View.GONE);
-                    binding.textViewEmptyUsers.setVisibility(View.VISIBLE);
+                    binding.progressBarFindFriends.setVisibility(View.GONE);
+//                    binding.textViewEmptyUsers.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                binding.textViewEmptyUsers.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+//                binding.textViewEmptyUsers.setVisibility(View.VISIBLE);
+                binding.progressBarFindFriends.setVisibility(View.GONE);
                 Toast.makeText(getContext(), getContext().getString(R.string.failed_to_fetch_data,error.getMessage()), Toast.LENGTH_SHORT).show();
             }
         };
