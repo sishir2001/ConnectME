@@ -37,7 +37,7 @@ public class ChatFragment extends Fragment {
 //        // Required empty public constructor
 //    }
     private FragmentChatBinding binding;
-    private View progressBar;
+//    private View progressBar;
 
     final private FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     private DatabaseReference chatDatabaseReference,databaseReference;
@@ -63,7 +63,7 @@ public class ChatFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        progressBar = view.findViewById(R.id.customProgressBar);
+//        progressBar = view.findViewById(R.id.customProgressBar);
         // initializing the database
         databaseReference = FirebaseDatabase
                 .getInstance(Constants.DATABASE_LINK)
@@ -84,8 +84,8 @@ public class ChatFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
-        binding.recyclerView.setLayoutManager(linearLayoutManager);
-        binding.recyclerView.setAdapter(chatListAdapter);
+        binding.recyclerViewChat.setLayoutManager(linearLayoutManager);
+        binding.recyclerViewChat.setAdapter(chatListAdapter);
 
         query = chatDatabaseReference.orderByChild(NodeNames.TIMESTAMP);
         // listens to the children for a particular node
@@ -121,7 +121,8 @@ public class ChatFragment extends Fragment {
     }
     private void updateList(@NotNull DataSnapshot snapshot,Boolean isNew,String userId){
             // need to add data to chatList
-        progressBar.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
+        binding.progressBarChatFragment.setVisibility(View.VISIBLE);
         String lastMessage = "",lastMessageTime= "";// refer from messages Node
         String unseenCount = snapshot.child(NodeNames.UNSEEN_COUNT).getValue() == null ? "0" : snapshot.child(NodeNames.UNSEEN_COUNT).getValue().toString();
 
@@ -129,8 +130,9 @@ public class ChatFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // fetch the data here
-                progressBar.setVisibility(View.GONE);
-                binding.textViewEmpty.setVisibility(View.GONE); // check
+                binding.progressBarChatFragment.setVisibility(View.GONE);
+//                progressBar.setVisibility(View.GONE);
+                binding.textViewEmptyChat.setVisibility(View.GONE); // check
                 if(snapshot.exists()){
                     String userName = snapshot.child(NodeNames.NAME).getValue().toString() == null ?"":snapshot.child(NodeNames.NAME).getValue().toString();
                     String userPhoto = snapshot.child(NodeNames.PHOTO).getValue().toString() == null ?"":snapshot.child(NodeNames.PHOTO).getValue().toString();
@@ -156,8 +158,9 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                progressBar.setVisibility(View.GONE);
-                binding.textViewEmpty.setVisibility(View.VISIBLE);
+//                progressBar.setVisibility(View.GONE);
+                binding.progressBarChatFragment.setVisibility(View.GONE);
+                binding.textViewEmptyChat.setVisibility(View.VISIBLE);
                 Toast.makeText(getActivity(), "Couldnt fetch the chats", Toast.LENGTH_SHORT).show();
             }
         });

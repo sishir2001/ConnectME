@@ -38,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
     // TODO : adding imageView to AppBar
     // TODO : Improve UI of the app
 
+    // TODO : close notification when user sees the message
+
+    // Runtime error in FindFriendsFragments and FriendRequestsFragments
+
     private ActivityMainBinding binding;
     private View progressBar;
 

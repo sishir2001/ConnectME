@@ -1,5 +1,7 @@
 package com.example.ConnectMe.Authentication;
 
+import static com.example.ConnectMe.common.PasswordRegex.acceptPassword;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -304,19 +306,22 @@ public class SignUpActivity extends AppCompatActivity {
         if(email.equals("")){
             binding.etEmail.setError(getString(R.string.enter_email));
         }
-        else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             binding.etEmail.setError(getString(R.string.enter_correct_email));
         }
-        else if(name.equals("")){
+        if(name.equals("")){
             binding.etName.setError(getString(R.string.enter_name));
         }
-        else if(password.equals("")){
+        if(password.equals("")){
             binding.etPassword.setError(getString(R.string.enter_password));
         }
-        else if(confirmPassword.equals("")){
+        if(!acceptPassword(password)){
+            binding.etPassword.setError(getString(R.string.pass_regex_error));
+        }
+        if(confirmPassword.equals("")){
             binding.etConfirmPassword.setError(getString(R.string.enter_confirm_password));
         }
-        else if(!password.equals(confirmPassword)){
+        if(!password.equals(confirmPassword)){
             binding.etConfirmPassword.setError(getString(R.string.passwords_not_matching));
         }
         // Registering with Firebase

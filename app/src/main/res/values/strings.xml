@@ -102,4 +102,6 @@
     <string name="intent_share_with">Share with ...</string>
     <string name="failed_to_save_token">Failed to save device token %1$s</string>
     <string name="failed_send_notification">Failed to send notification %14s</string>
+    <string name="pass_length_error">password length should be greater than 6</string>
+    <string name="pass_regex_error">password should contain minimum of one number,special character,one lowercase and one uppercase letter</string>
 </resources>
