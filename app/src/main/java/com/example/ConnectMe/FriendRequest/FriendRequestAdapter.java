@@ -86,6 +86,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
     private void btnAcceptClicked(FriendRequestModel otherUserDetails,@NonNull FriendRequestViewHolder holder){
         // first need to add both users to chat database with timestamp
         holder.pbFriendRequest.setVisibility(View.VISIBLE);
+        // creating a database with chat as node
         chatDatabaseReference.child(currentUser.getUid()).child(otherUserDetails.getUserID()).child(NodeNames.TIMESTAMP).setValue(ServerValue.TIMESTAMP)
                 .addOnCompleteListener(task -> {
                     holder.pbFriendRequest.setVisibility(View.GONE);

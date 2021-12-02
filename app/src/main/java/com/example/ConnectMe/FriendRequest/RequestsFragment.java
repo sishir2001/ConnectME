@@ -18,6 +18,7 @@ import com.example.ConnectMe.R;
 import com.example.ConnectMe.databinding.FragmentRequestsBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -74,13 +75,39 @@ public class RequestsFragment extends Fragment {
         requestAdapter = new FriendRequestAdapter(getActivity(),friendRequestList);
         binding.recyclerView.setAdapter(requestAdapter);
 
-        fetchRequests();
+        // should listen to the child users
+        friendReqDatabaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                fetchRequests();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 
     private void fetchRequests(){
+        friendRequestList.clear();
         progressBar.setVisibility(View.VISIBLE);
-        binding.textViewEmpty.setVisibility(View.GONE);
+        binding.textViewEmptyRequest.setVisibility(View.GONE);
 
         friendReqDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -133,7 +160,7 @@ public class RequestsFragment extends Fragment {
                 if(friendRequestList.isEmpty()){
                     Toast.makeText(getContext(),"Inside the if statement after loop", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
-                    binding.textViewEmpty.setVisibility(View.VISIBLE);
+                    binding.textViewEmptyRequest.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -141,7 +168,7 @@ public class RequestsFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
                 progressBar.setVisibility(View.GONE);
                 friendRequestList.clear();
-                binding.textViewEmpty.setVisibility(View.VISIBLE);
+                binding.textViewEmptyRequest.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(),getContext().getString(R.string.failed_to_fetch_data,error.getMessage()), Toast.LENGTH_SHORT).show();
             }
         });

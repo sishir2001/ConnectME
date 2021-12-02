@@ -48,7 +48,11 @@ public class ChatMessagingService extends FirebaseMessagingService {
 
         // when clicked on the notification redirect the user to login activity
         Intent chatIntent = new Intent(this, slideinfoActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,chatIntent,PendingIntent.FLAG_ONE_SHOT);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, chatIntent, PendingIntent.FLAG_IMMUTABLE);
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+//            pendingIntent = PendingIntent.getActivity(this,0,chatIntent,PendingIntent.FLAG_IMMUTABLE);
+//        }
 
         // to show a notification we need an object of a notificationManager
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
