@@ -41,7 +41,7 @@ public class Util {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
         if(connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null){
             // connectivity is there
-            Toast.makeText(context, ""+connectivityManager.getActiveNetworkInfo(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, ""+connectivityManager.getActiveNetworkInfo(), Toast.LENGTH_LONG).show();
             return connectivityManager.getActiveNetworkInfo().isAvailable();
         }
         else{

@@ -81,10 +81,12 @@ public class LoginActivity extends AppCompatActivity {
 
         // conditions for checking whether email and pass are empty
         if(email.equals("")){
-            binding.etEmail.setError(getString(R.string.enter_email));
+            binding.tilEmailLogin.setError(getString(R.string.enter_email));
+            binding.tilEmailLogin.requestFocus();
         }
         else if(password.equals("")){
-            binding.etPassword.setError(getString(R.string.enter_password));
+            binding.tilPasswordLogin.setError(getString(R.string.enter_password));
+            binding.tilPasswordLogin.requestFocus();
         }
         else{
             progressBar.setVisibility(View.VISIBLE);
@@ -99,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         if(task.isSuccessful()){
                             // navigate to Chat Activity
-                            Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         }
                         else{
