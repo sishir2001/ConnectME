@@ -99,6 +99,7 @@ public class FindfriendFragment extends Fragment {
         rootNodeDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                fetchUsersList();
             }
 
             @Override
@@ -118,6 +119,7 @@ public class FindfriendFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -137,61 +139,72 @@ public class FindfriendFragment extends Fragment {
 
                 for(DataSnapshot ds:snapshot.getChildren()){
                     // here we need to check the id of the child and current user , so as to not display in the request list
-                    String otherUser = ds.getKey();
-                    if(currentUser.getUid().equals(otherUser)){
-                        // getKey -> Uid in firebase
-//                        return;
-                        continue;
-                    }
-                    if(ds.child(NodeNames.NAME).getValue()!= null){
-                        // if the name is not blank in database
-//                        Toast.makeText(getContext(), "Inside You Know 0", Toast.LENGTH_SHORT).show();
-                        String fullname = ds.child(NodeNames.NAME).getValue().toString();
-                        String photoName = ds.child(NodeNames.PHOTO).getValue().toString();
 
-                        // TODO : check whether the loggedIn user has sent request to this particular user
-                        // need friendReqDatabase Reference
+                    if(ds.getValue() != null){
+                        String otherUser = ds.getKey();
+                        if(currentUser.getUid().equals(otherUser)){
+                            // getKey -> Uid in firebase
+//                        return;
+                            continue;
+                        }
+                        if(ds.child(NodeNames.NAME).getValue()!= null){
+                            // if the name is not blank in database
+//                        Toast.makeText(getContext(), "Inside You Know 0", Toast.LENGTH_SHORT).show();
+                            String fullname = ds.child(NodeNames.NAME).getValue().toString();
+                            String photoName = ds.child(NodeNames.PHOTO).getValue().toString();
+
+                            // TODO : check whether the loggedIn user has sent request to this particular user
+                            // need friendReqDatabase Reference
 
 //                        findFriendsModelList.add(new FindFriendsModel(fullname,photoName,ds.getKey(),false));
 //                        findFriendsAdapter.notifyDataSetChanged();// whole data will changed
 
-                        assert otherUser != null;
-                        friendRequestDatabaseReference.child(otherUser).child(NodeNames.REQ_TYPE).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                               if(snapshot.exists()){
-                                   String requestType = snapshot.getValue().toString();
+                            assert otherUser != null;
+                            friendRequestDatabaseReference.child(otherUser).child(NodeNames.REQ_TYPE).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.exists()){
+                                        String requestType = snapshot.getValue().toString();
 //                                   Toast.makeText(getContext(),requestType, Toast.LENGTH_SHORT).show();
-                                   Log.i("FindFriendFragment",""+requestType);
-                                   if(requestType.equals(Constants.REQ_ACCEPTED)){
-                                       findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,true));
-                                       findFriendsAdapter.notifyDataSetChanged();// whole data will changed
-                                   }
-                                   else if(requestType.equals(Constants.REQ_SENT)){
-                                        findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,true,false));
-                                        findFriendsAdapter.notifyDataSetChanged();// whole data will changed
-                                   }
-                                   else{
-                                       findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,false));
-                                       findFriendsAdapter.notifyDataSetChanged();// whole data will changed
-                                   }
-                               }
-                               else{
+                                        Log.i("FindFriendFragment",""+requestType);
+                                        if(requestType.equals(Constants.REQ_ACCEPTED)){
+                                            findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,true));
+                                            findFriendsAdapter.notifyDataSetChanged();// whole data will changed
+                                        }
+                                        else if(requestType.equals(Constants.REQ_SENT)){
+                                            findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,true,false));
+                                            findFriendsAdapter.notifyDataSetChanged();// whole data will changed
+                                        }
+                                        else{
+                                            findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,false));
+                                            findFriendsAdapter.notifyDataSetChanged();// whole data will changed
+                                        }
+                                    }
+                                    else{
 //                                   Toast.makeText(getContext(),"snapshot doesnt exist", Toast.LENGTH_SHORT).show();
-                                   findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,false));
-                                   findFriendsAdapter.notifyDataSetChanged();// whole data will changed
-                               }
-                            }
+                                        findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,false));
+                                        findFriendsAdapter.notifyDataSetChanged();// whole data will changed
+                                    }
+                                }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 //                                Toast.makeText(getContext(), "Inside You Know 1 onCancelled", Toast.LENGTH_SHORT).show();
-                                findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,false));
-                                findFriendsAdapter.notifyDataSetChanged();// whole data will changed
-                            }
-                        });
-                        progressBar.setVisibility(View.GONE);
+                                    findFriendsModelList.add(new FindFriendsModel(fullname,photoName,otherUser,false,false));
+                                    findFriendsAdapter.notifyDataSetChanged();// whole data will changed
+                                }
+                            });
+                            progressBar.setVisibility(View.GONE);
+                        }
                     }
+                    else{
+                        break;
+                    }
+                }
+                // if the list is empty , then no other user other than the signed user
+                if(findFriendsModelList.isEmpty()){
+                    progressBar.setVisibility(View.GONE);
+                    binding.textViewEmpty.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -200,6 +213,7 @@ public class FindfriendFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
                 binding.textViewEmpty.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
+                binding.textViewEmpty.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), getContext().getString(R.string.failed_to_fetch_data,error.getMessage()), Toast.LENGTH_SHORT).show();
             }
         });
