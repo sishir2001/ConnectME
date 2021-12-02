@@ -35,6 +35,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -58,6 +59,8 @@ public class ProfileActivity extends AppCompatActivity {
     // StorageReference for static file storage
     private StorageReference fileStorage;
     private Uri localFileUri,serverFileUri;
+    private MaterialAlertDialogBuilder alertBuilder;
+    private AlertDialog alertDialog;
 //    private View progressBar;
 
     @Override
@@ -67,6 +70,10 @@ public class ProfileActivity extends AppCompatActivity {
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+        alertBuilder = new MaterialAlertDialogBuilder(this)
+                .setCustomTitle(getLayoutInflater().inflate(R.layout.custom_progressbar,null));
+        alertDialog = alertBuilder.create();
+
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
@@ -142,13 +149,16 @@ public class ProfileActivity extends AppCompatActivity {
         name = binding.etName.getText().toString().trim();
 
         if(email.equals("")){
-            binding.etEmail.setError(getString(R.string.enter_email));
+            binding.tilEmailProfile.setError(getString(R.string.enter_email));
+            binding.tilEmailProfile.requestFocus();
         }
         else if(name.equals("")){
-            binding.etName.setError(getString(R.string.enter_name));
+            binding.tilNameProfile.setError(getString(R.string.enter_name));
+            binding.tilNameProfile.requestFocus();
         }
         else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            binding.etEmail.setError(getString(R.string.enter_correct_email));
+            binding.tilEmailProfile.setError(getString(R.string.enter_correct_email));
+            binding.tilEmailProfile.requestFocus();
         }
         else{
             if(Util.connectionAvailable(this)){
@@ -201,6 +211,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void removePhoto(){
 
 //        progressBar.setVisibility(View.VISIBLE);
+        alertDialog.show();
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setDisplayName(binding.etName.getText().toString().trim())
                 .setPhotoUri(null)
@@ -223,6 +234,7 @@ public class ProfileActivity extends AppCompatActivity {
                     databaseReference.child(userId).setValue(hashMap).addOnCompleteListener(task1 -> {
 //                    progressBar.setVisibility(View.GONE);
                         if(task1.isSuccessful()){
+                            alertDialog.dismiss();
                             Toast.makeText(ProfileActivity.this, "Profile Picture Removed Successfully", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -243,12 +255,14 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 else{
 //                progressBar.setVisibility(View.GONE);
+                    alertDialog.dismiss();
                     Toast.makeText(ProfileActivity.this, "Error in removing Profile Picture", Toast.LENGTH_SHORT).show();
                 }
             });
 
         }
         else{
+            alertDialog.dismiss();
             startActivity(new Intent(ProfileActivity.this, MessageActivity.class));
         }
     }
@@ -354,6 +368,7 @@ public class ProfileActivity extends AppCompatActivity {
         // First we need to upload the image
         String strFileName = firebaseUser.getUid() + ".jpg";
 
+        alertDialog.show();
 //        progressBar.setVisibility(View.VISIBLE);
         final StorageReference fileRef = fileStorage.child(NodeNames.IMAGES + "/" +strFileName); // refernce to a particular destination where the file can be uploaded
         fileRef.putFile(localFileUri).addOnCompleteListener(task -> {
@@ -384,15 +399,19 @@ public class ProfileActivity extends AppCompatActivity {
                             // pushing the data to the child node
                             databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task2 -> {
 //                                progressBar.setVisibility(View.GONE);
+
                                 if(task2.isSuccessful()){
+                                    alertDialog.dismiss();
                                     finish();
                                 }
                                 else{
+                                    alertDialog.dismiss();
                                     Toast.makeText(ProfileActivity.this,"Syncing of user profile with firebase error",Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
                         else{
+                            alertDialog.dismiss();
 //                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(ProfileActivity.this,getString(R.string.user_updation_failed,task.getException()), Toast.LENGTH_LONG).show();
                             Log.i("SignUpActivity","Failed to Update profile using firebaseUser.updateProfile()");
@@ -405,6 +424,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
             else{
 //                progressBar.setVisibility(View.GONE);
+                alertDialog.dismiss();
                 Toast.makeText(ProfileActivity.this, "Error in Syncing Profile picture", Toast.LENGTH_SHORT).show();
             }
         });
@@ -427,6 +447,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void updateOnlyName(){
         // Updating User details in the realtime database
 //        progressBar.setVisibility(View.VISIBLE);
+        alertDialog.show();
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setDisplayName(binding.etName.getText().toString().trim())
                 .build();
@@ -451,10 +472,12 @@ public class ProfileActivity extends AppCompatActivity {
                 databaseReference.child(userID).setValue(hashMap).addOnCompleteListener(task1 -> {
 //                    progressBar.setVisibility(View.GONE);
                     if(task1.isSuccessful()){
-                        Toast.makeText(ProfileActivity.this,getString(R.string.profile_updated_succ), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(ProfileActivity.this,getString(R.string.profile_updated_succ), Toast.LENGTH_SHORT).show();
+                        alertDialog.dismiss();
                         finish();
                     }
                     else{
+                        alertDialog.dismiss();
                         Toast.makeText(ProfileActivity.this, "Updation of Hashmap of userProfile failed : "+task1.getException(), Toast.LENGTH_SHORT).show();
                         Log.i("SignUpActivity","Updation of user profile failed : "+task1.getException());
                     }
@@ -462,6 +485,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
             else{
 //                progressBar.setVisibility(View.GONE);
+                alertDialog.dismiss();
                 Toast.makeText(ProfileActivity.this,getString(R.string.user_updation_failed,task.getException()), Toast.LENGTH_LONG).show();
                 Log.i("SignUpActivity","Failed to Update profile using firebaseUser.updateProfile()");
             }
