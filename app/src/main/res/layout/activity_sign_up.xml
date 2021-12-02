@@ -7,15 +7,6 @@
     tools:context="com.example.ConnectMe.Authentication.SignUpActivity"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/displayProgressBar"
-        layout="@layout/custom_progressbar"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ImageViewdefaultProfile"
         app:civ_border_width="2dp"

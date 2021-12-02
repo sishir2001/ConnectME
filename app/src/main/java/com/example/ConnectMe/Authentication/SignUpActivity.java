@@ -305,36 +305,59 @@ public class SignUpActivity extends AppCompatActivity {
         confirmPassword = binding.etConfirmPassword.getText().toString().trim();
 
         if(name.equals("")){
+            binding.tilEmail.setErrorEnabled(false);
+            binding.tilPassword.setErrorEnabled(false);
+            binding.tilConfirmPassword.setErrorEnabled(false);
             binding.tilName.setError(getString(R.string.enter_name));
             binding.tilName.requestFocus();
         }
         else if(email.equals("")){
+            binding.tilName.setErrorEnabled(false);
+            binding.tilPassword.setErrorEnabled(false);
+            binding.tilConfirmPassword.setErrorEnabled(false);
             binding.tilEmail.setError(getString(R.string.enter_email));
             binding.tilEmail.requestFocus();
         }
         else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            binding.tilName.setErrorEnabled(false);
+            binding.tilPassword.setErrorEnabled(false);
+            binding.tilConfirmPassword.setErrorEnabled(false);
             binding.tilEmail.setError(getString(R.string.enter_correct_email));
             binding.tilEmail.requestFocus();
         }
         else if(password.equals("")){
+            binding.tilName.setErrorEnabled(false);
+            binding.tilEmail.setErrorEnabled(false);
+            binding.tilConfirmPassword.setErrorEnabled(false);
             binding.tilPassword.setError(getString(R.string.enter_password));
             binding.tilPassword.requestFocus();
         }
         else if(!acceptPassword(password)){
+            binding.tilPassword.setErrorEnabled(false);
             binding.tilPassword.setError(getString(R.string.pass_regex_error));
             binding.tilPassword.requestFocus();
         }
         else if(confirmPassword.equals("")){
+            binding.tilName.setErrorEnabled(false);
+            binding.tilEmail.setErrorEnabled(false);
+            binding.tilPassword.setErrorEnabled(false);
             binding.tilConfirmPassword.setError(getString(R.string.enter_confirm_password));
             binding.tilConfirmPassword.requestFocus();
         }
         else if(!password.equals(confirmPassword)){
+            binding.tilName.setErrorEnabled(false);
+            binding.tilEmail.setErrorEnabled(false);
+            binding.tilPassword.setErrorEnabled(false);
             binding.tilConfirmPassword.setError(getString(R.string.passwords_not_matching));
             binding.tilConfirmPassword.requestFocus();
         }
         // Registering with Firebase
         else{
 //            progressBar.setVisibility(View.VISIBLE);
+            binding.tilName.setErrorEnabled(false);
+            binding.tilEmail.setErrorEnabled(false);
+            binding.tilPassword.setErrorEnabled(false);
+            binding.tilConfirmPassword.setErrorEnabled(false);
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             if(Util.connectionAvailable(this)){
                 firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(task -> {

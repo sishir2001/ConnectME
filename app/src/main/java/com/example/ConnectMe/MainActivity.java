@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     // TODO : Improve UI of the app
 
     // TODO : close notification when user sees the message
+    // TODO : fix friend Request tab requests
+    // TODO : redo all the xml layouts
 
     // Runtime error in FindFriendsFragments and FriendRequestsFragments
 

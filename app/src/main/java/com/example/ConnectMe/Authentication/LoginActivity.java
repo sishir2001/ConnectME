@@ -55,24 +55,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        // Checking whether user is already logged
-//        Log.i("LoginActivity","Inside onStart()");
-//        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-//        if(firebaseUser != null){
-//            // User is already logged in
-//            Toast.makeText(LoginActivity.this,"User is already loggedin "+firebaseUser.getEmail(),Toast.LENGTH_LONG).show();
-//            startActivity(new Intent(LoginActivity.this,MainActivity.class));
-//        }
-//        else{
-//            Toast.makeText(LoginActivity.this,"User is not loggedin ",Toast.LENGTH_LONG).show();
-//        }
-//        // else an user must login
-//    }
-
-
     //    public void clickedLoginBtn(View view){
     private void clickedLoginBtn(){
         // getText is very important
@@ -81,14 +63,18 @@ public class LoginActivity extends AppCompatActivity {
 
         // conditions for checking whether email and pass are empty
         if(email.equals("")){
+            binding.tilPasswordLogin.setErrorEnabled(false);
             binding.tilEmailLogin.setError(getString(R.string.enter_email));
             binding.tilEmailLogin.requestFocus();
         }
         else if(password.equals("")){
+            binding.tilEmailLogin.setErrorEnabled(false);
             binding.tilPasswordLogin.setError(getString(R.string.enter_password));
             binding.tilPasswordLogin.requestFocus();
         }
         else{
+            binding.tilEmailLogin.setErrorEnabled(false);
+            binding.tilEmailLogin.setErrorEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
             // password and email are not empty
             // Need to use firebase for authentication
@@ -107,6 +93,8 @@ public class LoginActivity extends AppCompatActivity {
                         else{
                             // Login Unsuccesful
                             Toast.makeText(LoginActivity.this, getString(R.string.login_failed,task.getException()), Toast.LENGTH_LONG).show();
+                            binding.tilEmailLogin.setErrorEnabled(true);
+                            binding.tilEmailLogin.setErrorEnabled(true);
                         }
                     }
                 });
