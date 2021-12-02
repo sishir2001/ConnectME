@@ -36,7 +36,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         // ActionBar code
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setTitle(getString(R.string.reset_password));
+            actionBar.setTitle(getString(R.string.forgot_password));
             // for up button in this activity
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);

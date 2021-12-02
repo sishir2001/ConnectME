@@ -106,14 +106,14 @@ public class Util {
                                 Response.Listener successListener = new Response.Listener() {
                                     @Override
                                     public void onResponse(Object response) {
-                                        Toast.makeText(context,"Notification Successfully sent",Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(context,"Notification Successfully sent",Toast.LENGTH_SHORT).show();
                                     }
                                 };
 
                                 Response.ErrorListener failureListener =  new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        Toast.makeText(context,context.getString(R.string.failed_send_notification,error.getMessage()),Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(context,context.getString(R.string.failed_send_notification,error.getMessage()),Toast.LENGTH_SHORT).show();
                                     }
                                 };
 
@@ -134,20 +134,20 @@ public class Util {
 
                             }
                             catch(JSONException e){
-                                Toast.makeText(context,context.getString(R.string.failed_send_notification,e.getMessage()),Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(context,context.getString(R.string.failed_send_notification,e.getMessage()),Toast.LENGTH_SHORT).show();
                             }
 
                         }
                         else{
                             // does not exist
-                            Toast.makeText(context,context.getString(R.string.failed_send_notification,""),Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(context,context.getString(R.string.failed_send_notification,""),Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                         // error
-                        Toast.makeText(context,context.getString(R.string.failed_send_notification,error.getMessage()),Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context,context.getString(R.string.failed_send_notification,error.getMessage()),Toast.LENGTH_SHORT).show();
                     }
                 });
 

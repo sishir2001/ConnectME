@@ -112,7 +112,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
             serverFileUri = firebaseUser.getPhotoUrl();
-            Toast.makeText(ProfileActivity.this, "photoUrl : "+serverFileUri, Toast.LENGTH_LONG).show();
+//            Toast.makeText(ProfileActivity.this, "photoUrl : "+serverFileUri, Toast.LENGTH_LONG).show();
 
             if(serverFileUri!=null){
                 // user has uploaded the picture
@@ -145,7 +145,7 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
-                        Toast.makeText(ProfileActivity.this,"Token revoked",Toast.LENGTH_SHORT);
+//                        Toast.makeText(ProfileActivity.this,"Token revoked",Toast.LENGTH_SHORT);
                         alertDialog.dismiss();
                         firebaseAuth.signOut();
                         startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
@@ -257,7 +257,7 @@ public class ProfileActivity extends AppCompatActivity {
 //                    progressBar.setVisibility(View.GONE);
                         if(task1.isSuccessful()){
                             alertDialog.dismiss();
-                            Toast.makeText(ProfileActivity.this, "Profile Picture Removed Successfully", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(ProfileActivity.this, "Profile Picture Removed Successfully", Toast.LENGTH_SHORT).show();
                         }
                     });
                     // remove file from cloud storage
@@ -266,12 +266,12 @@ public class ProfileActivity extends AppCompatActivity {
                     fileRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-                            Toast.makeText(ProfileActivity.this, "Deleted File even in storage", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(ProfileActivity.this, "Deleted File even in storage", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(ProfileActivity.this, "Deletion Failed in Cloud", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(ProfileActivity.this, "Deletion Failed in Cloud", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -300,9 +300,9 @@ public class ProfileActivity extends AppCompatActivity {
         }
         else{
             // request for the user permission
-            Toast.makeText(ProfileActivity.this,"Requesting Permission from activityCompat",Toast.LENGTH_SHORT).show();
+//            Toast.makeText(ProfileActivity.this,"Requesting Permission from activityCompat",Toast.LENGTH_SHORT).show();
             if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)){
-                Toast.makeText(ProfileActivity.this,"Should Show Rationale",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(ProfileActivity.this,"Should Show Rationale",Toast.LENGTH_SHORT).show();
                 // build a AlertBox
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Permission Needed")
@@ -324,7 +324,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
             else{
                 // directly request permission
-                Toast.makeText(ProfileActivity.this,"Not required to Show Rationale",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(ProfileActivity.this,"Not required to Show Rationale",Toast.LENGTH_SHORT).show();
                 ActivityCompat.requestPermissions(ProfileActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},102);
             }
             // need to handle this response of a permission in a callback
@@ -500,7 +500,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     else{
                         alertDialog.dismiss();
-                        Toast.makeText(ProfileActivity.this, "Updation of Hashmap of userProfile failed : "+task1.getException(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(ProfileActivity.this, "Updation of Hashmap of userProfile failed : "+task1.getException(), Toast.LENGTH_SHORT).show();
                         Log.i("SignUpActivity","Updation of user profile failed : "+task1.getException());
                     }
                 });

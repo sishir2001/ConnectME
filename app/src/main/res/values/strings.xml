@@ -106,4 +106,5 @@
     <string name="pass_regex_error">password should contain minimum of one number,special character,one lowercase and one uppercase letter</string>
     <string name="empty_users_list">No users in the platform</string>
     <string name="please_wait_while_sending_email">"Please while sending email "</string>
+    <string name="resend">resend</string>
 </resources>

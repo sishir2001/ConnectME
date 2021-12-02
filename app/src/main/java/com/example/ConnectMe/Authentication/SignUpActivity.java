@@ -100,9 +100,9 @@ public class SignUpActivity extends AppCompatActivity {
         }
         else{
             // request for the user permission
-            Toast.makeText(SignUpActivity.this,"Requesting Permission from activityCompat",Toast.LENGTH_SHORT).show();
+//            Toast.makeText(SignUpActivity.this,"Requesting Permission from activityCompat",Toast.LENGTH_SHORT).show();
             if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)){
-                Toast.makeText(SignUpActivity.this,"Should Show Rationale",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SignUpActivity.this,"Should Show Rationale",Toast.LENGTH_SHORT).show();
                 // build a AlertBox
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Permission Needed")
@@ -124,7 +124,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
             else{
                 // directly request permission
-                Toast.makeText(SignUpActivity.this,"Not required to Show Rationale",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SignUpActivity.this,"Not required to Show Rationale",Toast.LENGTH_SHORT).show();
                 ActivityCompat.requestPermissions(SignUpActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},102);
             }
             // need to handle this response of a permission in a callback

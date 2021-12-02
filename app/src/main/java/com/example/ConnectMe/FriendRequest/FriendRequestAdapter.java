@@ -96,19 +96,19 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                                 .setValue(ServerValue.TIMESTAMP)
                                 .addOnCompleteListener(task1 -> {
                                     if(task1.isSuccessful()){
-                                        Toast.makeText(context, "Accepted Request Successfully", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(context, "Accepted Request Successfully", Toast.LENGTH_SHORT).show();
 
                                         String notificationTitle = "Friend Request Accepted";
                                         String notificationMessage = "Friend Request Accepted by : "+currentUser.getDisplayName();
                                         Util.sendNotification(context,notificationTitle,notificationMessage, otherUserDetails.getUserID());
                                     }
                                     else{
-                                        Toast.makeText(context, "Couldnt accept request", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(context, "Couldnt accept request", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }
                     else{
-                        Toast.makeText(context, "Couldnt accept request", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "Couldnt accept request", Toast.LENGTH_SHORT).show();
                     }
                     this.notifyDataSetChanged();
                 });
@@ -122,7 +122,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                                 .addOnCompleteListener(task1 -> {
                                     if(task1.isSuccessful()){
 //                                        need to modify the users database to trigger an event change in find Friend adapter
-                                        Toast.makeText(context, "See Your Chat Tab !!", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(context, "See Your Chat Tab !!", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }
@@ -146,7 +146,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                                 .addOnCompleteListener(task1 -> {
                                     if(task1.isSuccessful()){
 //                                        need to modify the users database to trigger an event change in find Friend adapter
-                                        Toast.makeText(context, "Deleted Request Successfully", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(context, "Deleted Request Successfully", Toast.LENGTH_SHORT).show();
 
                                         String notificationTitle = "Friend Request Denied";
                                         String notificationMessage = "Friend Request Denied by : "+currentUser.getDisplayName();

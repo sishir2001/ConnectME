@@ -101,12 +101,12 @@ public class slideinfoActivity extends AppCompatActivity {
                         }
                     });
             // User is already logged in
-            Toast.makeText(slideinfoActivity.this,"User is already loggedin "+firebaseUser.getEmail(),Toast.LENGTH_LONG).show();
+//            Toast.makeText(slideinfoActivity.this,"User is already loggedin "+firebaseUser.getEmail(),Toast.LENGTH_LONG).show();
             startActivity(new Intent(slideinfoActivity.this, MainActivity.class));
         }
-        else{
-            Toast.makeText(slideinfoActivity.this,"User is not loggedin ",Toast.LENGTH_LONG).show();
-        }
+//        else{
+//            Toast.makeText(slideinfoActivity.this,"User is not loggedin ",Toast.LENGTH_LONG).show();
+//        }
         // else an user must login
     }
 }

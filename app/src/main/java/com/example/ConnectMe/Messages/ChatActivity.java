@@ -164,7 +164,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 // this method will be called when the user swipes the page
                 currentPage++; // loading the messages according to the pages
 //                binding.srlMessages.setRefreshing(true);
-                Toast.makeText(ChatActivity.this, "currentPage :"+currentPage, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(ChatActivity.this, "currentPage :"+currentPage, Toast.LENGTH_SHORT).show();
                 loadMessages();
             }
         });
@@ -278,7 +278,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                    if(ActivityCompat.shouldShowRequestPermissionRationale(ChatActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
                        // Should show request Rationale
                        // show a AlertDialogue box
-                       Toast.makeText(ChatActivity.this, "Should Show Rationale", Toast.LENGTH_SHORT).show();
+//                       Toast.makeText(ChatActivity.this, "Should Show Rationale", Toast.LENGTH_SHORT).show();
                        new MaterialAlertDialogBuilder(this)
                                .setTitle("Permission Needed")
                                .setMessage("Need to read external storage")
@@ -294,7 +294,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     }
                    else {
                        // not required to show the dialogue box
-                       Toast.makeText(ChatActivity.this, "Should not Show Rationale", Toast.LENGTH_SHORT).show();
+//                       Toast.makeText(ChatActivity.this, "Should not Show Rationale", Toast.LENGTH_SHORT).show();
                        ActivityCompat.requestPermissions(ChatActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
                    }
                 }
@@ -683,14 +683,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // checking whether permission is given or not
-        Toast.makeText(ChatActivity.this, "Inside onRequestPermissionResult Callback", Toast.LENGTH_SHORT).show();// Debug
+//        Toast.makeText(ChatActivity.this, "Inside onRequestPermissionResult Callback", Toast.LENGTH_SHORT).show();// Debug
 
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
             if(requestCode == 1){
                 // Show the bottom dialog now
-                Toast.makeText(ChatActivity.this, "Inside onRequestPermissionResult Callback,request matched", Toast.LENGTH_SHORT).show(); // Debug
+//                Toast.makeText(ChatActivity.this, "Inside onRequestPermissionResult Callback,request matched", Toast.LENGTH_SHORT).show(); // Debug
                 if(bottomSheetDialog != null){
-                    Toast.makeText(ChatActivity.this, "Showing bottomDialog", Toast.LENGTH_SHORT).show(); // Debug
+//                    Toast.makeText(ChatActivity.this, "Showing bottomDialog", Toast.LENGTH_SHORT).show(); // Debug
                     bottomSheetDialog.show();
                 }
             }
@@ -734,7 +734,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                            Toast.makeText(ChatActivity.this,getString(R.string.msg_send_error,error.getMessage()), Toast.LENGTH_SHORT).show();
                        }
                        else{
-                           Toast.makeText(ChatActivity.this,getString(R.string.message_sent_success), Toast.LENGTH_SHORT).show();
+//                           Toast.makeText(ChatActivity.this,getString(R.string.message_sent_success), Toast.LENGTH_SHORT).show();
 
                            String notificationTitle = "";
                            if(msgType.equals(Constants.MSG_TYPE_TEXT)){
@@ -779,20 +779,20 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                                               StorageReference fileRef = rootStorageRef.child(folderName).child(fileName);
                                               fileRef.delete().addOnCompleteListener(task2 -> {
                                                   if(task2.isSuccessful()){
-                                                      Toast.makeText(ChatActivity.this,getString(R.string.message_deleted_successfully), Toast.LENGTH_SHORT).show();
+//                                                      Toast.makeText(ChatActivity.this,getString(R.string.message_deleted_successfully), Toast.LENGTH_SHORT).show();
                                                   }
                                                   else{
-                                                      Toast.makeText(ChatActivity.this,getString(R.string.error_deletion_cloud,task2.getException()), Toast.LENGTH_SHORT).show();
+//                                                      Toast.makeText(ChatActivity.this,getString(R.string.error_deletion_cloud,task2.getException()), Toast.LENGTH_SHORT).show();
                                                   }
                                               });
                                           }
                                           else{
                                               // text
-                                              Toast.makeText(ChatActivity.this,getString(R.string.message_deleted_successfully), Toast.LENGTH_SHORT).show();
+//                                              Toast.makeText(ChatActivity.this,getString(R.string.message_deleted_successfully), Toast.LENGTH_SHORT).show();
                                           }
                                       }
                                       else{
-                                          Toast.makeText(ChatActivity.this,getString(R.string.message_deletion_error,task1.getException()), Toast.LENGTH_SHORT).show();
+//                                          Toast.makeText(ChatActivity.this,getString(R.string.message_deletion_error,task1.getException()), Toast.LENGTH_SHORT).show();
                                       }
                                    });
 
@@ -803,7 +803,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     });
         }
         else{
-            Toast.makeText(ChatActivity.this, "currentUserId,chatUserId not available,ChatActivity->deleteMessages", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(ChatActivity.this, "currentUserId,chatUserId not available,ChatActivity->deleteMessages", Toast.LENGTH_SHORT).show();
 
         }
     }

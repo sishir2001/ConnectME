@@ -86,6 +86,7 @@ public class ChatFragment extends Fragment {
         linearLayoutManager.setStackFromEnd(true);
         binding.recyclerViewChat.setLayoutManager(linearLayoutManager);
         binding.recyclerViewChat.setAdapter(chatListAdapter);
+        binding.textViewEmptyChat.setVisibility(View.VISIBLE);
 
         query = chatDatabaseReference.orderByChild(NodeNames.TIMESTAMP);
         // listens to the children for a particular node
@@ -128,6 +129,7 @@ public class ChatFragment extends Fragment {
         }
         else{
             binding.progressBarChatFragment.setVisibility(View.VISIBLE);
+            binding.textViewEmptyChat.setVisibility(View.GONE);
             String lastMessage = "",lastMessageTime= "";// refer from messages Node
             String unseenCount = snapshot.child(NodeNames.UNSEEN_COUNT).getValue() == null ? "0" : snapshot.child(NodeNames.UNSEEN_COUNT).getValue().toString();
 
@@ -138,7 +140,7 @@ public class ChatFragment extends Fragment {
                     if(snapshot.exists()){
                         String userName = snapshot.child(NodeNames.NAME).getValue().toString() == null ?"":snapshot.child(NodeNames.NAME).getValue().toString();
                         String userPhoto = snapshot.child(NodeNames.PHOTO).getValue().toString() == null ?"":snapshot.child(NodeNames.PHOTO).getValue().toString();
-                        Toast.makeText(getActivity(),userName + " : " + userPhoto,Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getActivity(),userName + " : " + userPhoto,Toast.LENGTH_SHORT).show();
                         Log.i("ChatFragment",userName + " : " + userPhoto);
 
                         // only if the user is new , directly add to the list
@@ -157,7 +159,7 @@ public class ChatFragment extends Fragment {
                     else{
                         binding.progressBarChatFragment.setVisibility(View.GONE);
                         binding.textViewEmptyChat.setVisibility(View.VISIBLE);
-                        Toast.makeText(getActivity(), "SnapShot doesnt Exist", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getActivity(), "SnapShot doesnt Exist", Toast.LENGTH_SHORT).show();
                     }
                 }
 

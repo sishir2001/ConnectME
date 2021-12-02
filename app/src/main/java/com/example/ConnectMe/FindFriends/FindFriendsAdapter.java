@@ -174,7 +174,7 @@ public class FindFriendsAdapter extends RecyclerView.Adapter<FindFriendsAdapter.
                                 .child(NodeNames.REQ_TYPE)
                                 .setValue(null)
                                 .addOnCompleteListener(task1 -> {
-                                    Toast.makeText(view.getContext(), "Request Cancelled Succesfully", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(view.getContext(), "Request Cancelled Succesfully", Toast.LENGTH_SHORT).show();
                                 });
                     }
                     else{
